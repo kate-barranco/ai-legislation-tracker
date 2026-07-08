@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Legislation Tracker — Key Findings</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-geo@4"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -170,9 +171,64 @@
   section.theme-section.level-federal .insight-line { background: var(--federal-bg); }
   section.theme-section.level-state .insight-line { background: var(--state-bg); }
 
-  .chart-wrap { max-width: 760px; margin-bottom: 0.5rem; }
-  .chart-wrap.small { max-width: 440px; }
+  .chart-wrap { max-width: 900px; margin-bottom: 0.5rem; }
+  .chart-wrap.small { max-width: 520px; }
+  .chart-wrap.large { max-width: 100%; }
   .chart-row { display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start; }
+
+  /* Insight lines can jump straight to the chart/table that evidences them */
+  .insight-line { flex-wrap: wrap; }
+  .insight-line .insight-jump {
+    flex-shrink: 0; font-size: 0.78rem; font-weight: 700; color: var(--color-primary);
+    background: rgba(255,255,255,0.6); border: 1px solid var(--color-border); border-radius: 999px;
+    padding: 0.2rem 0.65rem; text-decoration: none; white-space: nowrap; margin-left: auto;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .insight-line .insight-jump:hover { background: #fff; transform: translateY(-1px); }
+
+  /* Hero stat cards double as links down to the section that evidences them */
+  a.stat-card { text-decoration: none; color: inherit; }
+  .stat-card .stat-jump-hint { font-size: 0.76rem; color: var(--color-secondary); font-weight: 700; margin-top: 0.5rem; }
+
+  /* Choropleth map card */
+  .map-card {
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 1rem 1.1rem 0.5rem; margin-bottom: 1.25rem;
+  }
+  .map-card .map-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .map-canvas-wrap { position: relative; width: 100%; height: 420px; }
+  .map-legend { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; color: var(--color-text-muted); margin: 0.6rem 0 0.8rem; }
+  .map-legend .legend-gradient { flex: 1; max-width: 260px; height: 10px; border-radius: 5px; background: linear-gradient(to right, #DBEAFE, #1E40AF); }
+  .map-legend .legend-nodata { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .map-legend .legend-nodata::before { content: ''; width: 0.6rem; height: 0.6rem; border-radius: 2px; background: #E2E8F0; border: 1px solid #cbd5e1; display: inline-block; }
+  .map-fallback { font-size: 0.85rem; color: var(--color-text-muted); font-style: italic; }
+
+  /* Topic trend line chart legend (rising/falling) */
+  .trend-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; font-size: 0.83rem; margin: 0.6rem 0 1rem; }
+  .trend-legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .trend-legend .swatch { width: 0.7rem; height: 0.7rem; border-radius: 2px; display: inline-block; }
+  .trend-legend .dir-up { color: #B91C1C; font-weight: 700; }
+  .trend-legend .dir-down { color: #047857; font-weight: 700; }
+  .trend-legend .dir-flat { color: var(--color-text-muted); font-weight: 700; }
+
+  /* Browse section: progressive disclosure, not a full dump up front */
+  .browse-teaser {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 1rem 1.25rem;
+  }
+  .browse-teaser p { margin: 0; font-size: 0.95rem; color: var(--color-text); max-width: 600px; }
+  .browse-teaser .count-inline { font-family: var(--font-heading); font-weight: 800; color: var(--color-heading); }
+  .browse-toggle-btn {
+    flex-shrink: 0; border: none; background: var(--color-primary); color: #fff; font-family: var(--font-body);
+    font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.2rem; border-radius: 8px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .browse-toggle-btn:hover { background: #16276b; transform: translateY(-1px); }
+  .browse-toggle-btn .chev { transition: transform 0.2s ease; display: inline-block; }
+  .browse-toggle-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  .browse-panel { margin-top: 1.1rem; }
+  .browse-panel[hidden] { display: none; }
 
   table { border-collapse: collapse; width: 100%; font-size: 0.87rem; margin-bottom: 0.75rem; }
   th, td { text-align: left; padding: 0.45rem 0.65rem; border-bottom: 1px solid var(--color-border); }
@@ -304,52 +360,80 @@
 
 <section class="theme-section reveal" id="browse">
   <h2 class="section-title">Browse All Legislation <span class="level-badge state">State</span><span class="level-badge federal">Federal</span></h2>
-  <p class="lede">Every tracked bill from every source, in one table, flagged by where it came from — filter by level or by source instead of hunting through separate reports.</p>
-  <div class="browse-controls">
-    <div class="bc-group">
-      <label class="bc-title">Level</label>
-      <div class="chip-toggle" id="browse-level-toggle">
-        <button data-level="all" class="active">All</button>
-        <button data-level="state">State</button>
-        <button data-level="federal">Federal</button>
+  <p class="lede">Every tracked bill from every source, flagged by where it came from — filter by level or by source instead of hunting through separate reports.</p>
+
+  <div class="browse-teaser" id="browse-teaser">
+    <p><span class="count-inline" id="browse-teaser-count">…</span> bills tracked across four independent sources, each shown with its own source's own words — nothing merged or reworded.</p>
+    <button class="browse-toggle-btn" id="browse-toggle-btn" type="button" aria-expanded="false" aria-controls="browse-panel">
+      <span class="btn-text">Browse the full list</span> <span class="chev">&#9660;</span>
+    </button>
+  </div>
+
+  <div class="browse-panel" id="browse-panel" hidden>
+    <div class="browse-controls">
+      <div class="bc-group">
+        <label class="bc-title">Level</label>
+        <div class="chip-toggle" id="browse-level-toggle">
+          <button data-level="all" class="active">All</button>
+          <button data-level="state">State</button>
+          <button data-level="federal">Federal</button>
+        </div>
+      </div>
+      <div class="bc-group">
+        <label class="bc-title">Source</label>
+        <div class="chip-toggle" id="browse-source-toggle">
+          <button data-source="all" class="active">All sources</button>
+          <button data-source="ncsl">NCSL</button>
+          <button data-source="fpf">FPF</button>
+          <button data-source="aaf">AAF</button>
+          <button data-source="brennan_center">Brennan Center</button>
+        </div>
+      </div>
+      <div class="bc-group">
+        <label class="bc-title">Search</label>
+        <input type="text" class="browse-search" id="browse-search" placeholder="Jurisdiction, bill number, or title…">
       </div>
     </div>
-    <div class="bc-group">
-      <label class="bc-title">Source</label>
-      <div class="chip-toggle" id="browse-source-toggle">
-        <button data-source="all" class="active">All sources</button>
-        <button data-source="ncsl">NCSL</button>
-        <button data-source="fpf">FPF</button>
-        <button data-source="aaf">AAF</button>
-        <button data-source="brennan_center">Brennan Center</button>
-      </div>
+    <div class="browse-count" id="browse-count">Loading…</div>
+    <table id="browse-table">
+      <thead><tr><th>Level</th><th>Source</th><th>Jurisdiction</th><th>Bill</th><th>Title</th><th>Status (verbatim)</th></tr></thead>
+      <tbody id="browse-tbody"></tbody>
+    </table>
+    <div class="browse-pager">
+      <button id="browse-prev">&larr; Prev</button>
+      <span id="browse-page-label"></span>
+      <button id="browse-next">Next &rarr;</button>
     </div>
-    <div class="bc-group">
-      <label class="bc-title">Search</label>
-      <input type="text" class="browse-search" id="browse-search" placeholder="Jurisdiction, bill number, or title…">
-    </div>
+    <details class="methods-toggle"><summary>Why isn't this one unified taxonomy?</summary>
+      <div class="method-note">NCSL, AAF, Brennan Center, and FPF each use their own, non-aligned status and category schemas — see <a href="#methods">Sources &amp; Methods</a>. Merging them into a single made-up taxonomy would misrepresent what each source actually says, so every row here shows its source's own text verbatim, just tagged so you can filter it.</div>
+    </details>
   </div>
-  <div class="browse-count" id="browse-count">Loading…</div>
-  <table id="browse-table">
-    <thead><tr><th>Level</th><th>Source</th><th>Jurisdiction</th><th>Bill</th><th>Title</th><th>Status (verbatim)</th></tr></thead>
-    <tbody id="browse-tbody"></tbody>
-  </table>
-  <div class="browse-pager">
-    <button id="browse-prev">&larr; Prev</button>
-    <span id="browse-page-label"></span>
-    <button id="browse-next">Next &rarr;</button>
-  </div>
-  <details class="methods-toggle"><summary>Why isn't this one unified taxonomy?</summary>
-    <div class="method-note">NCSL, AAF, Brennan Center, and FPF each use their own, non-aligned status and category schemas — see <a href="#methods">Sources &amp; Methods</a>. Merging them into a single made-up taxonomy would misrepresent what each source actually says, so every row here shows its source's own text verbatim, just tagged so you can filter it.</div>
-  </details>
 </section>
 
 <section class="theme-section reveal level-state" data-level="state" id="where">
   <h2 class="section-title"><span class="level-badge state">State</span>Where AI legislation is happening</h2>
   <p class="lede">State-by-state volume of AI-related bills, adjusted for population, and which states haven't introduced anything at all. Source: <abbr title="National Conference of State Legislatures">NCSL</abbr>.</p>
 
-  <h3>Bills introduced, by state</h3>
+  <h3 id="where-chart-anchor">Bills introduced, by state</h3>
   <div id="where-insight" class="insight-line loading">Loading…</div>
+
+  <div class="map-card">
+    <div class="map-toolbar">
+      <strong style="font-size:0.85rem;color:var(--color-heading);">Map view — color shows density</strong>
+      <div class="chip-toggle" id="where-map-toggle">
+        <button data-metric="raw" class="active">Raw bill count</button>
+        <button data-metric="percapita">Per 100k residents</button>
+      </div>
+    </div>
+    <div class="map-canvas-wrap"><canvas id="chart-bills-map"></canvas></div>
+    <div class="map-legend">
+      <span id="map-legend-min">0</span>
+      <span class="legend-gradient"></span>
+      <span id="map-legend-max">—</span>
+      <span class="legend-nodata">no tracked bills</span>
+    </div>
+  </div>
+
   <div class="chart-row">
     <div class="chart-wrap"><canvas id="chart-bills-per-state"></canvas></div>
     <div class="chart-wrap"><canvas id="chart-bills-per-capita"></canvas></div>
@@ -372,13 +456,18 @@
   <h2 class="section-title"><span class="level-badge state">State</span>What lawmakers are focused on</h2>
   <p class="lede">The topics state bills most commonly address, and where a bill's subject matter has appeared most and least often.</p>
 
-  <h3>Most common topics (bills can carry more than one tag)</h3>
+  <h3 id="topics-chart-anchor">Most common topics (bills can carry more than one tag)</h3>
   <div id="topics-insight" class="insight-line loading">Loading…</div>
   <div class="chart-wrap"><canvas id="chart-topics"></canvas></div>
 
-  <h3>2025 vs. 2026: which topics are rising</h3>
+  <h3 id="trend-chart-anchor">2025 vs. 2026: which topics are rising</h3>
   <div id="trend-note" class="insight-line"></div>
-  <table id="trend-table"><thead><tr><th>Topic</th><th>2025</th><th>2026</th></tr></thead><tbody></tbody></table>
+  <p class="lede" style="margin:0 0 0.5rem;font-size:0.9rem;">Each line follows one topic's bill count from 2025 to 2026 — a line sloping up means that topic is getting <em>more</em> attention this year; sloping down means <em>less</em>. Showing the highest-volume topics only, so the chart stays readable; the full 25-topic table is below.</p>
+  <div class="chart-wrap large"><canvas id="chart-topic-trend"></canvas></div>
+  <div class="trend-legend" id="trend-legend"></div>
+  <details class="methods-toggle"><summary>Show full 2025 vs. 2026 table (all topics)</summary>
+    <table id="trend-table"><thead><tr><th>Topic</th><th>2025</th><th>2026</th></tr></thead><tbody></tbody></table>
+  </details>
 
   <h3>Where bills die: topics among failed legislation</h3>
   <div class="chart-wrap"><canvas id="chart-graveyard"></canvas></div>
@@ -396,7 +485,7 @@
   <div id="bipartisan-insight" class="insight-line loading">Loading…</div>
   <div class="grid-2">
     <div>
-      <h3>Sponsorship type</h3>
+      <h3 id="bipartisan-chart-anchor">Sponsorship type</h3>
       <div class="chart-wrap small"><canvas id="chart-sponsorship"></canvas></div>
     </div>
     <div>
@@ -415,7 +504,7 @@
   <p class="lede">Most bills that get introduced never reach a final vote. Here's what happens to the ones that do, and how long it takes.</p>
 
   <div id="passing-insight" class="insight-line loading">Loading…</div>
-  <h3>Status of all tracked state bills</h3>
+  <h3 id="passing-chart-anchor">Status of all tracked state bills</h3>
   <div class="chart-wrap small"><canvas id="chart-status-breakdown"></canvas></div>
 
   <h3>Passage rate</h3>
@@ -446,7 +535,7 @@
   <p class="lede">Recent legislative activity, bills that carried over between sessions, and which topics tend to cluster in the same states.</p>
 
   <div id="momentum-insight" class="insight-line loading">Loading…</div>
-  <h3>Recent activity</h3>
+  <h3 id="momentum-chart-anchor">Recent activity</h3>
   <div id="momentum-out"></div>
 
   <h3>Carryover bills (returning from a prior session)</h3>
@@ -463,7 +552,10 @@
 
   <h3>How concentrated is each state's focus?</h3>
   <details class="methods-toggle"><summary>Show top topics by state, with concentration score</summary>
-    <div class="method-note">A higher score means that state's AI bills cluster tightly around one or two topics rather than spreading across many. (<abbr title="Herfindahl-Hirschman Index — a standard concentration measure used in economics, scaled 0–10,000">HHI</abbr>)</div>
+    <div class="method-note">
+      <strong>What this measures:</strong> whether a state's AI bills are spread across many different topics, or clustered tightly around just one or two. A state that only ever legislates on, say, "chatbots" scores very differently from one that spreads its bills evenly across ten topics — even if both states have the same total number of bills.<br><br>
+      <strong>How it's calculated (<abbr title="Herfindahl-Hirschman Index — a standard concentration measure used in economics, scaled 0–10,000">HHI</abbr>):</strong> for each state, take the percentage share of its bills that fall under each topic, square each percentage, then add up the squares. Example: a state whose bills are 50% one topic and 50% another scores 50² + 50² = 5,000. A state whose one topic tag covers 100% of its bills scores the maximum, 100² = 10,000. A state whose bills are spread evenly across, say, 10 topics (10% each) scores just 10 × 10² = 1,000. So: closer to 10,000 = concentrated on very few topics; closer to 0 = broad, spread-out focus. This exact formula is borrowed from economics, where it's normally used to measure how concentrated a market is among a few companies — here it's applied to topics instead of companies.
+    </div>
     <table id="concentration-table"><thead><tr><th>State</th><th>Top topics</th><th>Concentration score (0–10,000)</th></tr></thead><tbody></tbody></table>
   </details>
 </section>
@@ -474,7 +566,7 @@
   <div id="chatbot-insight" class="insight-line loading">Loading…</div>
   <div id="fpf-total"></div>
   <div class="grid-2">
-    <div class="chart-wrap small"><canvas id="chart-fpf-category"></canvas></div>
+    <div class="chart-wrap small"><canvas id="chart-fpf-category" aria-describedby="chatbot-insight"></canvas><span id="chatbot-chart-anchor"></span></div>
     <div class="chart-wrap small"><canvas id="chart-fpf-status"></canvas></div>
   </div>
   <h4>Jurisdiction breakdown</h4>
@@ -487,6 +579,7 @@
   <h2 class="section-title"><span class="level-badge federal">Federal</span>Congress: slower and less structured than the states</h2>
   <p class="lede">Two independently maintained federal trackers — <abbr title="American Action Forum">AAF</abbr> and the Brennan Center for Justice. Neither publishes bill-level state data or a consistently populated status field the way state legislatures do, so federal figures are reported on their own terms rather than merged into the state metrics above.</p>
   <div id="federal-insight" class="insight-line loading">Loading…</div>
+  <span id="federal-chart-anchor"></span>
 
   <div class="bc-group" style="margin-bottom:1rem;">
     <label class="bc-title">Show source</label>
@@ -591,6 +684,55 @@ const FEDERAL_COLORS = ['#B45309','#D97706','#F59E0B','#FBBF24','#EA580C','#C241
 const OTHER_COLORS = ['#6D28D9','#7C3AED','#8B5CF6','#A78BFA','#C4B5FD'];
 const COLORS = STATE_COLORS; // default palette
 
+// A qualitative, non-sequential palette for breakdowns where categories are
+// distinct *kinds of thing* (status, type) rather than points on the
+// state/federal/other level spectrum -- so adjacent bars/slices don't read
+// as "more/less of the same family."
+const CATEGORICAL_COLORS = ['#2563EB','#DC2626','#059669','#D97706','#7C3AED','#0891B2','#DB2777','#65A30D','#4B5563','#EA580C','#0D9488','#9333EA'];
+
+function hashIndex(str, mod) {
+  let h = 0;
+  for (let i = 0; i < (str||'').length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+  return Math.abs(h) % mod;
+}
+
+// Semantic color for bill/activity status labels: green = became law,
+// red = rejected, amber = mid-process, slate = no resolution yet. Anything
+// that doesn't match a known pattern falls back to the categorical palette
+// (still consistent per-label, just not semantically meaningful).
+function statusColor(label) {
+  const l = (label || '').toLowerCase();
+  if (/(enact|adopt|sign|passed legislature)/.test(l)) return '#059669';
+  if (/(veto|fail)/.test(l)) return '#DC2626';
+  if (/(governor|passed chamber)/.test(l)) return '#D97706';
+  if (/(pending|inactive|unknown)/.test(l)) return '#64748B';
+  return CATEGORICAL_COLORS[hashIndex(label, CATEGORICAL_COLORS.length)];
+}
+
+// Semantic color for political-party labels, using the real-world red/blue
+// convention rather than an arbitrary palette -- color here IS the meaning.
+function partyColor(label) {
+  const l = (label || '').toLowerCase();
+  if (l === 'd' || l === 'dfl' || l.includes('democrat')) return '#1E40AF';
+  if (l === 'r' || l.includes('republic')) return '#DC2626';
+  if (l === 'i' || l.includes('independent')) return '#7C3AED';
+  if (l.includes('territory')) return '#94A3B8';
+  return '#64748B';
+}
+
+// FIPS numeric state code -> USPS postal abbreviation, for matching
+// us-atlas topojson features (keyed by FIPS id) to our own per-state data
+// (keyed by postal code). Standard U.S. Census/FIPS code assignments.
+const FIPS_TO_ABBR = {
+  '01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT','10':'DE','11':'DC',
+  '12':'FL','13':'GA','15':'HI','16':'ID','17':'IL','18':'IN','19':'IA','20':'KS','21':'KY',
+  '22':'LA','23':'ME','24':'MD','25':'MA','26':'MI','27':'MN','28':'MS','29':'MO','30':'MT',
+  '31':'NE','32':'NV','33':'NH','34':'NJ','35':'NM','36':'NY','37':'NC','38':'ND','39':'OH',
+  '40':'OK','41':'OR','42':'PA','44':'RI','45':'SC','46':'SD','47':'TN','48':'TX','49':'UT',
+  '50':'VT','51':'VA','53':'WA','54':'WV','55':'WI','56':'WY',
+  '60':'AS','66':'GU','69':'MP','72':'PR','78':'VI',
+};
+
 let STATE_NAMES = {};
 const ACRONYMS = {
   'NCSL': 'National Conference of State Legislatures',
@@ -626,9 +768,10 @@ function stateAbbr(code) {
 function barChart(canvasId, labels, data, label, horizontal=false, palette=COLORS) {
   const el = document.getElementById(canvasId);
   if (!el) return;
+  const colors = labels.map((_, i) => palette[i % palette.length]);
   new Chart(el, {
     type: 'bar',
-    data: { labels, datasets: [{ label, data, backgroundColor: palette[0] }] },
+    data: { labels, datasets: [{ label, data, backgroundColor: colors }] },
     options: {
       indexAxis: horizontal ? 'y' : 'x',
       plugins: { legend: { display: false }, tooltip: { enabled: true } },
@@ -641,9 +784,10 @@ function barChart(canvasId, labels, data, label, horizontal=false, palette=COLOR
 function pieChart(canvasId, labels, data, palette=COLORS) {
   const el = document.getElementById(canvasId);
   if (!el) return;
+  const colors = labels.map((_, i) => palette[i % palette.length]);
   new Chart(el, {
     type: 'pie',
-    data: { labels, datasets: [{ data, backgroundColor: palette }] },
+    data: { labels, datasets: [{ data, backgroundColor: colors }] },
     options: { responsive: true, plugins: { legend: { position: 'right' } }, animation: { duration: 700, easing: 'easeOutQuart' } }
   });
 }
@@ -651,18 +795,125 @@ function pieChart(canvasId, labels, data, palette=COLORS) {
 // Chart-selection guidance: pie/donut only reads clearly with <=5 categories;
 // beyond that, switch to a sorted horizontal bar so every value stays legible
 // and comparable. This picks automatically instead of hardcoding per chart.
+// `palette` can be a flat color array (cycled by position, e.g. a level's
+// color family) OR a function (label) => color, for cases where the color
+// itself should carry meaning (status, party) rather than just varying.
 function breakdownChart(canvasId, entries, label, palette=COLORS) {
   const sorted = [...entries].sort((a, b) => b[1] - a[1]);
+  const resolvedPalette = typeof palette === 'function' ? sorted.map(([k]) => palette(k)) : palette;
   if (sorted.length <= 5) {
-    pieChart(canvasId, sorted.map(e => e[0]), sorted.map(e => e[1]), palette);
+    pieChart(canvasId, sorted.map(e => e[0]), sorted.map(e => e[1]), resolvedPalette);
   } else {
-    barChart(canvasId, sorted.map(e => e[0]), sorted.map(e => e[1]), label, true, palette);
+    barChart(canvasId, sorted.map(e => e[0]), sorted.map(e => e[1]), label, true, resolvedPalette);
   }
+}
+
+function lineChart(canvasId, labels, datasets) {
+  const el = document.getElementById(canvasId);
+  if (!el) return;
+  new Chart(el, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+      interaction: { mode: 'index', intersect: false },
+      animation: { duration: 700, easing: 'easeOutQuart' },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
 }
 
 function fillTableBody(tableId, rows) {
   const tbody = document.querySelector(`#${tableId} tbody`);
   tbody.innerHTML = rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+}
+
+// ---- US state choropleth map (chartjs-chart-geo + us-atlas topojson) ----
+// Loaded lazily and defensively: if the geo library or its data fails to
+// load (offline, ad-blocker, older browser without the required Chart.js
+// APIs), the map area just shows a plain-language fallback note instead of
+// breaking the rest of the page.
+let usStatesGeo = null, usNationGeo = null;
+const mapChartInstances = {};
+let lastPerStateData = null;
+
+async function ensureUsGeo() {
+  if (usStatesGeo) return;
+  const us = await getJSON('https://cdn.jsdelivr.net/npm/us-atlas/states-10m.json');
+  usNationGeo = ChartGeo.topojson.feature(us, us.objects.nation).features[0];
+  usStatesGeo = ChartGeo.topojson.feature(us, us.objects.states).features;
+}
+
+function mapColorForValue(value, min, max) {
+  if (value === null || value === undefined) return '#E2E8F0';
+  const t = max > min ? (value - min) / (max - min) : 0;
+  const c0 = [219, 234, 254], c1 = [30, 64, 175];
+  const rgb = c0.map((c, i) => Math.round(c + (c1[i] - c) * t));
+  return `rgb(${rgb.join(',')})`;
+}
+
+async function renderStateMap(canvasId, perStateArr, valueKey) {
+  const el = document.getElementById(canvasId);
+  if (!el) return;
+  if (typeof Chart === 'undefined' || typeof ChartGeo === 'undefined') {
+    el.closest('.map-canvas-wrap').innerHTML = '<p class="map-fallback">Map view needs a modern browser with JavaScript maps support — the bar charts below show the same data.</p>';
+    return;
+  }
+  try {
+    await ensureUsGeo();
+  } catch (e) {
+    el.closest('.map-canvas-wrap').innerHTML = '<p class="map-fallback">Map data couldn\'t be loaded (offline?) — the bar charts below show the same data.</p>';
+    return;
+  }
+  const valueByAbbr = {};
+  perStateArr.forEach(s => { if (s[valueKey] != null) valueByAbbr[s.state_abbr] = s[valueKey]; });
+  const values = Object.values(valueByAbbr);
+  const min = values.length ? Math.min(...values) : 0;
+  const max = values.length ? Math.max(...values) : 0;
+  const data = usStatesGeo.map(f => {
+    const abbr = FIPS_TO_ABBR[f.id];
+    const v = abbr ? valueByAbbr[abbr] : undefined;
+    return { feature: f, value: v ?? null, abbr: abbr || null };
+  });
+  const bg = data.map(d => mapColorForValue(d.value, min, max));
+
+  if (mapChartInstances[canvasId]) mapChartInstances[canvasId].destroy();
+  mapChartInstances[canvasId] = new Chart(el, {
+    type: 'choropleth',
+    data: {
+      labels: usStatesGeo.map(f => f.properties.name),
+      datasets: [{
+        label: 'States',
+        outline: usNationGeo,
+        showOutline: true,
+        backgroundColor: bg,
+        data,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const d = ctx.raw || {};
+              const val = d.value === null || d.value === undefined ? 'no tracked bills' : d.value.toLocaleString();
+              return `${ctx.label}${d.abbr ? ' (' + d.abbr + ')' : ''}: ${val}`;
+            },
+          },
+        },
+      },
+      scales: { projection: { axis: 'x', projection: 'albersUsa' } },
+    },
+  });
+
+  const legendMin = document.getElementById('map-legend-min');
+  const legendMax = document.getElementById('map-legend-max');
+  if (legendMin) legendMin.textContent = min.toLocaleString();
+  if (legendMax) legendMax.textContent = max.toLocaleString();
 }
 
 // ---- Liveliness: animated count-up for numeric hero stats ----
@@ -724,57 +975,58 @@ async function loadHighlights() {
       n: h.state_bills_total, suffix: '',
       label: 'State AI bills tracked',
       why: `Across ${h.jurisdictions_with_activity} states and territories — AI legislation is now active almost everywhere, not just tech hubs.`,
-      flavor: 'state-flavor'
+      flavor: 'state-flavor', link: '#where'
     },
     {
       n: h.passage_rate_pct_of_concluded, suffix: '%',
       label: 'Passage rate',
       why: `Of bills that reached a final outcome (${fmt(h.positive_final)} passed, ${fmt(h.negative_final)} failed/vetoed). Still-pending bills are excluded — their outcome isn't known yet.`,
-      flavor: 'state-flavor'
+      flavor: 'state-flavor', link: '#passing'
     },
     {
       n: h.bipartisan_pct, suffix: '%',
       label: 'Bipartisan-sponsored',
       why: `${fmt(h.bipartisan_count)} bills had sponsors from more than one party — AI is one of the few areas where both parties are actively legislating together.`,
-      flavor: 'state-flavor'
+      flavor: 'state-flavor', link: '#bipartisan'
     },
     {
       static: h.most_active_state ? h.most_active_state.state_abbr : '—',
       label: 'Most active state',
       why: h.most_active_state ? `${h.most_active_state.state} leads with ${fmt(h.most_active_state.bill_count)} bills — more than any other state.` : '',
-      flavor: 'state-flavor'
+      flavor: 'state-flavor', link: '#where'
     },
     {
       n: h.bills_touched_last_90_days, suffix: '',
       label: 'Bills with action in last 90 days',
       why: 'A live read on how fast this is currently moving, measured from each source\'s own scrape timestamp.',
-      flavor: 'state-flavor'
+      flavor: 'state-flavor', link: '#momentum'
     },
     {
       n: h.zero_legislation_jurisdictions, suffix: '',
       label: 'States with zero AI bills',
       why: 'Jurisdictions that haven\'t introduced a single tracked AI bill — a policy vacuum worth watching.',
-      flavor: 'state-flavor'
+      flavor: 'state-flavor', link: '#where'
     },
     {
       n: (h.federal_bills_aaf + h.federal_bills_brennan_center), suffix: '',
       label: 'Federal bills tracked (Congress)',
       why: `${fmt(h.federal_bills_aaf)} via AAF + ${fmt(h.federal_bills_brennan_center)} via Brennan Center — two independently maintained trackers, reported separately since their schemas don't align.`,
-      flavor: 'federal-flavor'
+      flavor: 'federal-flavor', link: '#federal'
     },
     {
       static: `${fmt(h.red_state_bills)} / ${fmt(h.blue_state_bills)}`,
       label: 'Bills: Trump-won vs. Harris-won states (2024)',
       why: 'Legislative volume grouped by each state\'s 2024 presidential result — a description of where bills are coming from, not of any bill\'s content.',
-      flavor: 'state-flavor'
+      flavor: 'state-flavor', link: '#bipartisan'
     },
   ];
   document.getElementById('stat-grid').innerHTML = cards.map(c => `
-    <div class="stat-card ${c.flavor||''}">
+    <a class="stat-card ${c.flavor||''}" href="${c.link||'#findings'}">
       <div class="stat-number">${c.static !== undefined ? c.static : `<span class="count" data-target="${c.n ?? 0}" data-suffix="${c.suffix||''}">0${c.suffix||''}</span>`}</div>
       <div class="stat-label">${glossify(c.label)}</div>
       <div class="stat-why">${glossify(c.why)}</div>
-    </div>`).join('');
+      <div class="stat-jump-hint">See the data behind this &darr;</div>
+    </a>`).join('');
 
   document.querySelectorAll('.count').forEach(el => {
     const target = Number(el.dataset.target || 0);
@@ -847,8 +1099,21 @@ document.getElementById('browse-next').addEventListener('click', () => { browseS
 async function loadBillsAll() {
   const d = await getJSON('/api/bills/all');
   ALL_BILLS = d.bills;
+  const teaserCount = document.getElementById('browse-teaser-count');
+  if (teaserCount) teaserCount.textContent = ALL_BILLS.length.toLocaleString();
   renderBrowseTable();
 }
+
+// Progressive disclosure: the full 2,900+ row table stays collapsed behind
+// an explicit "browse" action rather than dumping the whole list on load.
+document.getElementById('browse-toggle-btn').addEventListener('click', function () {
+  const panel = document.getElementById('browse-panel');
+  const nowHidden = !panel.hidden; // toggling
+  panel.hidden = nowHidden;
+  this.setAttribute('aria-expanded', String(!nowHidden));
+  this.querySelector('.btn-text').textContent = nowHidden ? 'Browse the full list' : 'Hide the full list';
+  if (!nowHidden && typeof panel.scrollIntoView === 'function') panel.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'nearest' });
+});
 
 // ---- Federal section: AAF vs Brennan Center source toggle ----
 document.getElementById('federal-source-toggle').addEventListener('click', (e) => {
@@ -858,6 +1123,14 @@ document.getElementById('federal-source-toggle').addEventListener('click', (e) =
   const choice = btn.dataset.fsource;
   document.querySelector('[data-fsource-block="aaf"]').style.display = (choice === 'all' || choice === 'aaf') ? '' : 'none';
   document.querySelector('[data-fsource-block="brennan"]').style.display = (choice === 'all' || choice === 'brennan') ? '' : 'none';
+});
+
+// ---- Where section: raw count vs. per-capita map toggle ----
+document.getElementById('where-map-toggle').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-metric]');
+  if (!btn || !lastPerStateData) return;
+  document.querySelectorAll('#where-map-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+  renderStateMap('chart-bills-map', lastPerStateData, btn.dataset.metric === 'raw' ? 'bill_count' : 'bills_per_100k_population');
 });
 
 async function loadMeta() {
@@ -880,39 +1153,42 @@ async function loadNcsl() {
   barChart('chart-bills-per-state', sortedByCount.map(s=>s.state_abbr), sortedByCount.map(s=>s.bill_count), 'Bills', false, STATE_COLORS);
   const perCapita = perState.states.filter(s=>s.bills_per_100k_population!=null).sort((a,b)=>b.bills_per_100k_population-a.bills_per_100k_population);
   barChart('chart-bills-per-capita', perCapita.map(s=>s.state_abbr), perCapita.map(s=>s.bills_per_100k_population), 'Bills per 100k population', false, STATE_COLORS);
+  lastPerStateData = perState.states;
+  renderStateMap('chart-bills-map', perState.states, 'bill_count');
   const top = sortedByCount[0], topCapita = perCapita[0];
   document.getElementById('where-insight').innerHTML =
-    `${top.state} has introduced the most bills in raw terms (${top.bill_count.toLocaleString()}). Adjusted for population, ${topCapita.state} leads instead (${topCapita.bills_per_100k_population} per 100k residents) — raw volume and per-capita volume tell different stories.`;
+    `${top.state} has introduced the most bills in raw terms (${top.bill_count.toLocaleString()}). Adjusted for population, ${topCapita.state} leads instead (${topCapita.bills_per_100k_population} per 100k residents) — raw volume and per-capita volume tell different stories. <strong>Why they diverge:</strong> a big state like ${top.state} can rack up a high raw count just by having more legislators introducing bills, while a small state like ${topCapita.state} needs far fewer bills to rank highest once that count is divided by its population. Raw counts answer "where is the most activity happening in absolute terms," per-capita answers "where is AI legislation most prioritized relative to the size of the state" — neither is the "correct" way to read it, they just answer different questions. <a class="insight-jump" href="#where-chart-anchor">See the chart &darr;</a>`;
   document.getElementById('where-insight').classList.remove('loading');
 
   const overview = await getJSON('/api/ncsl/overview');
-  breakdownChart('chart-status-breakdown', Object.entries(overview.status_breakdown), 'Bills', STATE_COLORS);
+  breakdownChart('chart-status-breakdown', Object.entries(overview.status_breakdown), 'Bills', statusColor);
 
   const topics = await getJSON('/api/ncsl/topics');
   barChart('chart-topics', topics.topics.map(t=>t.topic), topics.topics.map(t=>t.bill_count), 'Bill count', true, STATE_COLORS);
   const topTopic = topics.topics[0];
   document.getElementById('topics-insight').innerHTML =
-    `"${topTopic.topic}" is the single most common topic tag, appearing on ${topTopic.pct_of_bills}% of all tracked state bills (${fmt(topTopic.bill_count)} bills). Bills can carry more than one topic, so this isn't a full partition of the dataset.`;
+    `"${topTopic.topic}" is the single most common topic tag, appearing on ${topTopic.pct_of_bills}% of all tracked state bills (${fmt(topTopic.bill_count)} bills). Bills can carry more than one topic, so this isn't a full partition of the dataset. <a class="insight-jump" href="#topics-chart-anchor">See the chart &darr;</a>`;
   document.getElementById('topics-insight').classList.remove('loading');
 
   const momentum = await getJSON('/api/ncsl/momentum');
   document.getElementById('momentum-out').innerHTML = `<div class="method-note">Reference date: ${momentum.reference_date} (${momentum.reference_date_meaning})</div>
     <span class="pill">Last 30 days: ${momentum.counts.last_30_days}</span>
     <span class="pill">Last 90 days: ${momentum.counts.last_90_days}</span>
-    <span class="pill">Last 365 days: ${momentum.counts.last_365_days}</span>`;
+    <span class="pill">Last 365 days: ${momentum.counts.last_365_days}</span>
+    <div class="method-note" style="margin-top:0.6rem;">These three numbers overlap on purpose — they're not separate buckets that add up to a total. "Last 30 days" counts bills active in the past month; "Last 90 days" counts bills active in the past three months, which <em>includes</em> everything already counted in the 30-day figure, plus more; "Last 365 days" includes both of those, plus the rest of the past year. Think of them as three progressively wider windows looking backward from the same reference date, not three non-overlapping slices of time.</div>`;
   document.getElementById('momentum-insight').innerHTML =
-    `${fmt(momentum.counts.last_90_days)} bills have seen action in the last 90 days alone — this is an actively moving legislative area, not a settled one.`;
+    `${fmt(momentum.counts.last_90_days)} bills have seen action in the last 90 days alone — this is an actively moving legislative area, not a settled one. <a class="insight-jump" href="#momentum-chart-anchor">See the numbers &darr;</a>`;
   document.getElementById('momentum-insight').classList.remove('loading');
 
   const sponsorship = await getJSON('/api/ncsl/sponsorship_type');
-  breakdownChart('chart-sponsorship', Object.entries(sponsorship.counts), 'Bills', STATE_COLORS);
+  breakdownChart('chart-sponsorship', Object.entries(sponsorship.counts), 'Bills', CATEGORICAL_COLORS);
 
   const authorParty = await getJSON('/api/ncsl/author_party_split');
-  breakdownChart('chart-author-party', Object.entries(authorParty.primary_sponsor_party), 'Bills', STATE_COLORS);
+  breakdownChart('chart-author-party', Object.entries(authorParty.primary_sponsor_party), 'Bills', partyColor);
   const biMulti = sponsorship.counts.bipartisan_multi_party || 0;
   const biTotal = Object.values(sponsorship.counts).reduce((a,b)=>a+b,0);
   document.getElementById('bipartisan-insight').innerHTML =
-    `${fmt(biMulti)} of ${fmt(biTotal)} bills (${(biMulti/biTotal*100).toFixed(1)}%) had sponsors from more than one party — bipartisan sponsorship on AI is common, not the exception.`;
+    `${fmt(biMulti)} of ${fmt(biTotal)} bills (${(biMulti/biTotal*100).toFixed(1)}%) had sponsors from more than one party — bipartisan sponsorship on AI is common, not the exception. <a class="insight-jump" href="#bipartisan-chart-anchor">See the chart &darr;</a>`;
   document.getElementById('bipartisan-insight').classList.remove('loading');
 
   const passage = await getJSON('/api/ncsl/passage');
@@ -923,7 +1199,7 @@ async function loadNcsl() {
     <span class="pill">Still pending (excluded): ${ov.unresolved_excluded}</span>
     <span class="pill accent">Passage rate: ${ov.passage_rate_pct_of_concluded}%</span>`;
   document.getElementById('passing-insight').innerHTML =
-    `Of bills with a known final outcome, ${ov.passage_rate_pct_of_concluded}% passed (${fmt(ov.positive_final)} enacted/adopted vs. ${fmt(ov.negative_final)} failed/vetoed). ${fmt(ov.unresolved_excluded)} bills are still pending and excluded from this rate.`;
+    `Of bills with a known final outcome, ${ov.passage_rate_pct_of_concluded}% passed (${fmt(ov.positive_final)} enacted/adopted vs. ${fmt(ov.negative_final)} failed/vetoed). ${fmt(ov.unresolved_excluded)} bills are still pending and excluded from this rate. <a class="insight-jump" href="#passing-chart-anchor">See the breakdown &darr;</a>`;
   document.getElementById('passing-insight').classList.remove('loading');
   fillTableBody('passage-by-party', Object.entries(passage.by_sponsor_party).map(([k,v])=>[k,v.positive_final,v.negative_final,v.unresolved_excluded,v.passage_rate_pct_of_concluded]));
   fillTableBody('passage-by-state', Object.entries(passage.by_state).map(([k,v])=>[stateAbbr(k),v.positive_final,v.negative_final,v.unresolved_excluded,v.passage_rate_pct_of_concluded]));
@@ -939,7 +1215,7 @@ async function loadNcsl() {
 
   const redBlue = await getJSON('/api/ncsl/red_blue');
   document.getElementById('redblue-note').textContent = redBlue.source + '. ' + redBlue.note;
-  breakdownChart('chart-red-blue', Object.entries(redBlue.totals_by_group), 'Bills', STATE_COLORS);
+  breakdownChart('chart-red-blue', Object.entries(redBlue.totals_by_group), 'Bills', partyColor);
 
   const conc = await getJSON('/api/ncsl/category_concentration');
   fillTableBody('concentration-table', Object.entries(conc.by_state).sort((a,b)=>b[1].herfindahl_index-a[1].herfindahl_index).map(([state,v])=>[stateAbbr(state), v.top_topics.map(t=>`${t.topic} (${t.n})`).join(', '), v.herfindahl_index]));
@@ -959,6 +1235,32 @@ async function loadNcsl() {
   const trend = await getJSON('/api/ncsl/category_trend');
   document.getElementById('trend-note').textContent = trend.note;
   fillTableBody('trend-table', Object.entries(trend.by_topic).map(([topic,years])=>[topic, years['2025']||0, years['2026']||0]));
+  {
+    // Show the top-8 topics by combined 2025+2026 volume as lines so the
+    // chart stays readable -- the collapsed table above still has all 25.
+    const topicRows = Object.entries(trend.by_topic).map(([topic, years]) => ({
+      topic, y2025: years['2025'] || 0, y2026: years['2026'] || 0,
+    }));
+    const topN = [...topicRows].sort((a, b) => (b.y2025 + b.y2026) - (a.y2025 + a.y2026)).slice(0, 8);
+    const datasets = topN.map((t, i) => ({
+      label: t.topic,
+      data: [t.y2025, t.y2026],
+      borderColor: CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length],
+      backgroundColor: CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length],
+      tension: 0.25,
+      pointRadius: 4,
+      borderWidth: 2,
+      fill: false,
+    }));
+    lineChart('chart-topic-trend', ['2025', '2026'], datasets);
+    document.getElementById('trend-legend').innerHTML = topN.map((t, i) => {
+      const diff = t.y2026 - t.y2025;
+      const dirClass = diff > 0 ? 'dir-up' : diff < 0 ? 'dir-down' : 'dir-flat';
+      const arrow = diff > 0 ? '&#9650;' : diff < 0 ? '&#9660;' : '&#9679;';
+      const diffText = diff === 0 ? 'flat' : `${diff > 0 ? '+' : ''}${diff}`;
+      return `<span><span class="swatch" style="background:${CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]}"></span>${t.topic} <span class="${dirClass}">${arrow} ${diffText}</span></span>`;
+    }).join('');
+  }
 
   const grave = await getJSON('/api/ncsl/failed_graveyard');
   barChart('chart-graveyard', grave.topics_among_failed_bills.map(t=>t.topic), grave.topics_among_failed_bills.map(t=>t.n), 'Failed bills', true, STATE_COLORS);
@@ -976,20 +1278,20 @@ async function loadAaf() {
   const aaf = await getJSON('/api/aaf/overview');
   document.getElementById('aaf-note').innerHTML = glossify(aaf.note);
   document.getElementById('aaf-total').innerHTML = `<span class="pill accent">Total federal bills: ${aaf.total_bills}</span>`;
-  breakdownChart('chart-aaf-classification', Object.entries(aaf.classification_breakdown), 'Bills', FEDERAL_COLORS);
+  breakdownChart('chart-aaf-classification', Object.entries(aaf.classification_breakdown), 'Bills', CATEGORICAL_COLORS);
   breakdownChart('chart-aaf-chamber', Object.entries(aaf.chamber_breakdown), 'Bills', FEDERAL_COLORS);
 }
 
 async function loadFpf() {
   const fpf = await getJSON('/api/fpf/overview');
   document.getElementById('fpf-total').innerHTML = `<span class="pill accent">Total chatbot bills: ${fpf.total_bills}</span>`;
-  breakdownChart('chart-fpf-category', Object.entries(fpf.category_breakdown), 'Bills', STATE_COLORS);
-  breakdownChart('chart-fpf-status', Object.entries(fpf.status_breakdown), 'Bills', STATE_COLORS);
+  breakdownChart('chart-fpf-category', Object.entries(fpf.category_breakdown), 'Bills', CATEGORICAL_COLORS);
+  breakdownChart('chart-fpf-status', Object.entries(fpf.status_breakdown), 'Bills', statusColor);
   const jur = Object.entries(fpf.jurisdiction_breakdown).sort((a,b)=>b[1]-a[1]);
   barChart('chart-fpf-jurisdiction', jur.map(x=>x[0]), jur.map(x=>x[1]), 'Bills', false, STATE_COLORS);
   const topJur = jur[0];
   document.getElementById('chatbot-insight').innerHTML =
-    `${fmt(fpf.total_bills)} chatbot-specific bills tracked, led by ${stateAbbr(topJur[0])} with ${topJur[1]} — all of them state-level, despite this tracker's own source page separately mentioning a few federal proposals it doesn't actually list (see Sources &amp; Methods).`;
+    `${fmt(fpf.total_bills)} chatbot-specific bills tracked, led by ${stateAbbr(topJur[0])} with ${topJur[1]} — all of them state-level, despite this tracker's own source page separately mentioning a few federal proposals it doesn't actually list (see Sources &amp; Methods). <a class="insight-jump" href="#chatbot-chart-anchor">See the chart &darr;</a>`;
   document.getElementById('chatbot-insight').classList.remove('loading');
 
   const prov = await getJSON('/api/fpf/provision_prevalence');
@@ -1003,11 +1305,11 @@ async function loadBrennanCenter() {
   document.getElementById('brennan-total').innerHTML = `<span class="pill accent">Total federal bills: ${ov.total_bills}</span>`;
   breakdownChart('chart-brennan-congress', Object.entries(ov.by_congress), 'Bills', FEDERAL_COLORS);
   breakdownChart('chart-brennan-chamber', Object.entries(ov.by_chamber), 'Bills', FEDERAL_COLORS);
-  breakdownChart('chart-brennan-status-119', Object.entries(ov.status_119th_congress_only), 'Bills', FEDERAL_COLORS);
+  breakdownChart('chart-brennan-status-119', Object.entries(ov.status_119th_congress_only), 'Bills', statusColor);
 
   const aafOv = await getJSON('/api/aaf/overview');
   document.getElementById('federal-insight').innerHTML =
-    `Congress has ${fmt(aafOv.total_bills + ov.total_bills)} tracked AI-related bills across two trackers (${fmt(aafOv.total_bills)} AAF + ${fmt(ov.total_bills)} Brennan Center) — but unlike the states, neither tracker publishes a reliable status field, so a federal "passage rate" can't be computed the way it can for states.`;
+    `Congress has ${fmt(aafOv.total_bills + ov.total_bills)} tracked AI-related bills across two trackers (${fmt(aafOv.total_bills)} AAF + ${fmt(ov.total_bills)} Brennan Center) — but unlike the states, neither tracker publishes a reliable status field, so a federal "passage rate" can't be computed the way it can for states. <a class="insight-jump" href="#federal-chart-anchor">See the trackers &darr;</a>`;
   document.getElementById('federal-insight').classList.remove('loading');
 
   const approach = await getJSON('/api/brennan_center/regulatory_approach_118th');
