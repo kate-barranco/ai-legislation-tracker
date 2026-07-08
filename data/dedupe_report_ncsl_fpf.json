@@ -1,0 +1,779 @@
+{
+  "method": "Matched on (state_abbr, first-letter-of-bill-type, numeric bill number) as a heuristic bridging NCSL/StateNet's internal type codes (H/S/A/L) and each state's public bill-number convention used by FPF (HB/SB/AB/LD/LB/SF/S). Not an exact-string match; flagged, not silently merged.",
+  "notes": [
+    "AAF is federal-only and NCSL is state-only -- no overlap is structurally possible between those two tables, so no comparison was attempted there.",
+    "A match here means the SAME bill likely appears in both the general NCSL AI-legislation database and FPF's chatbot-specific tracker (expected, since chatbot bills are a subset of AI legislation) -- not an error, but flagged per Step 5 instructions rather than silently merged into one row."
+  ],
+  "summary": {
+    "total_fpf_records": 32,
+    "fpf_records_with_a_match_in_ncsl": 30,
+    "fpf_records_with_no_match_in_ncsl": 2,
+    "total_ncsl_records": 2655,
+    "ncsl_records_matched_by_an_fpf_record": 31,
+    "ncsl_records_with_no_fpf_match": 2624
+  },
+  "matches": [
+    {
+      "match_key": {
+        "state_abbr": "CA",
+        "chamber_letter": "S",
+        "digits": "1119"
+      },
+      "fpf_record": {
+        "id": 1,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "CA",
+        "bill_number": "SB 1119/ AB 2023",
+        "lead_sponsors": "Sen. Padilla (D) Asm. Bauer-Kahan (D)",
+        "status": "Passed Chamber"
+      },
+      "ncsl_record": {
+        "id": 138,
+        "state": "California",
+        "state_abbr": "CA",
+        "bill_type": "S",
+        "bill_num": "1119",
+        "bill_number": "S 1119",
+        "status": "Pending - Assembly Appropriations Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "CA",
+        "chamber_letter": "A",
+        "digits": "2023"
+      },
+      "fpf_record": {
+        "id": 1,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "CA",
+        "bill_number": "SB 1119/ AB 2023",
+        "lead_sponsors": "Sen. Padilla (D) Asm. Bauer-Kahan (D)",
+        "status": "Passed Chamber"
+      },
+      "ncsl_record": {
+        "id": 161,
+        "state": "California",
+        "state_abbr": "CA",
+        "bill_type": "A",
+        "bill_num": "2023",
+        "bill_number": "A 2023",
+        "status": "Pending - Senate Appropriations Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "CA",
+        "chamber_letter": "S",
+        "digits": "867"
+      },
+      "fpf_record": {
+        "id": 2,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "CA",
+        "bill_number": "SB 867",
+        "lead_sponsors": "Sen. Padilla (D)",
+        "status": "Passed Chamber"
+      },
+      "ncsl_record": {
+        "id": 121,
+        "state": "California",
+        "state_abbr": "CA",
+        "bill_type": "S",
+        "bill_num": "867",
+        "bill_number": "S 867",
+        "status": "Pending - Assembly Appropriations Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "CA",
+        "chamber_letter": "A",
+        "digits": "1988"
+      },
+      "fpf_record": {
+        "id": 3,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "CA",
+        "bill_number": "AB 1988",
+        "lead_sponsors": "Asm. Pellerin (D)",
+        "status": "Passed Chamber"
+      },
+      "ncsl_record": {
+        "id": 160,
+        "state": "California",
+        "state_abbr": "CA",
+        "bill_type": "A",
+        "bill_num": "1988",
+        "bill_number": "A 1988",
+        "status": "Pending - Senate Privacy, Digital Technologies, and Consumer Protection Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "CA",
+        "chamber_letter": "S",
+        "digits": "300"
+      },
+      "fpf_record": {
+        "id": 4,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "CA",
+        "bill_number": "SB 300",
+        "lead_sponsors": "Sen. Padilla (D)",
+        "status": "Passed Chamber"
+      },
+      "ncsl_record": {
+        "id": 106,
+        "state": "California",
+        "state_abbr": "CA",
+        "bill_type": "S",
+        "bill_num": "300",
+        "bill_number": "S 300",
+        "status": "Pending - Assembly Appropriations Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "HI",
+        "chamber_letter": "S",
+        "digits": "3001"
+      },
+      "fpf_record": {
+        "id": 5,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "HI",
+        "bill_number": "SB 3001",
+        "lead_sponsors": "Sen. Keohokalole (D)",
+        "status": "Passed Legislature"
+      },
+      "ncsl_record": {
+        "id": 560,
+        "state": "Hawaii",
+        "state_abbr": "HI",
+        "bill_type": "S",
+        "bill_num": "3001",
+        "bill_number": "S 3001",
+        "status": "To Governor - To Governor"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "MI",
+        "chamber_letter": "S",
+        "digits": "760"
+      },
+      "fpf_record": {
+        "id": 6,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "MI",
+        "bill_number": "SB 760",
+        "lead_sponsors": "Sen. Polehanki (D)",
+        "status": "Passed Chamber"
+      },
+      "ncsl_record": {
+        "id": 1134,
+        "state": "Michigan",
+        "state_abbr": "MI",
+        "bill_type": "S",
+        "bill_num": "760",
+        "bill_number": "S 760",
+        "status": "Pending - House Communications and Technology Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "NY",
+        "chamber_letter": "S",
+        "digits": "9408"
+      },
+      "fpf_record": {
+        "id": 7,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "NY",
+        "bill_number": "S 9408",
+        "lead_sponsors": "Sen. Gounardes (D)",
+        "status": "Passed Legislature"
+      },
+      "ncsl_record": {
+        "id": 1692,
+        "state": "New York",
+        "state_abbr": "NY",
+        "bill_type": "S",
+        "bill_num": "9408",
+        "bill_number": "S 9408",
+        "status": "To Governor - Eligible for Governor"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "NY",
+        "chamber_letter": "S",
+        "digits": "9051"
+      },
+      "fpf_record": {
+        "id": 8,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "NY",
+        "bill_number": "S 9051",
+        "lead_sponsors": "Sen. Gonzalez (D)",
+        "status": "Passed Legislature"
+      },
+      "ncsl_record": {
+        "id": 1678,
+        "state": "New York",
+        "state_abbr": "NY",
+        "bill_type": "S",
+        "bill_num": "9051",
+        "bill_number": "S 9051",
+        "status": "To Governor - Eligible for Governor"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "PA",
+        "chamber_letter": "S",
+        "digits": "1090"
+      },
+      "fpf_record": {
+        "id": 9,
+        "category": "2026 Proposed Chatbot Legislation",
+        "jurisdiction": "PA",
+        "bill_number": "SB 1090",
+        "lead_sponsors": "Sen. Pennycuick (R)",
+        "status": "Passed Chamber"
+      },
+      "ncsl_record": {
+        "id": 2062,
+        "state": "Pennsylvania",
+        "state_abbr": "PA",
+        "bill_type": "S",
+        "bill_num": "1090",
+        "bill_number": "S 1090",
+        "status": "Pending - House Communications & Technology Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "CA",
+        "chamber_letter": "S",
+        "digits": "243"
+      },
+      "fpf_record": {
+        "id": 10,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "CA",
+        "bill_number": "SB 243",
+        "lead_sponsors": "Sen. Padilla (D)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 203,
+        "state": "California",
+        "state_abbr": "CA",
+        "bill_type": "S",
+        "bill_num": "243",
+        "bill_number": "S 243",
+        "status": "Enacted - Act No. 2025-677"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "CT",
+        "chamber_letter": "S",
+        "digits": "5"
+      },
+      "fpf_record": {
+        "id": 11,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "CT",
+        "bill_number": "SB 5",
+        "lead_sponsors": "Sen. Maroney (D)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 279,
+        "state": "Connecticut",
+        "state_abbr": "CT",
+        "bill_type": "S",
+        "bill_num": "5",
+        "bill_number": "S 5",
+        "status": "Enacted - Act No. 26-15"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "CO",
+        "chamber_letter": "H",
+        "digits": "1263"
+      },
+      "fpf_record": {
+        "id": 12,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "CO",
+        "bill_number": "HB 1263",
+        "lead_sponsors": "Rep. Camacho (D)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 258,
+        "state": "Colorado",
+        "state_abbr": "CO",
+        "bill_type": "H",
+        "bill_num": "1263",
+        "bill_number": "H 1263",
+        "status": "Enacted - Act No. 208"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "GA",
+        "chamber_letter": "S",
+        "digits": "540"
+      },
+      "fpf_record": {
+        "id": 13,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "GA",
+        "bill_number": "SB 540",
+        "lead_sponsors": "Sen. Anavitarte (R)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 434,
+        "state": "Georgia",
+        "state_abbr": "GA",
+        "bill_type": "S",
+        "bill_num": "540",
+        "bill_number": "S 540",
+        "status": "Enacted - Act No. 518"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "IA",
+        "chamber_letter": "S",
+        "digits": "2417"
+      },
+      "fpf_record": {
+        "id": 14,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "IA",
+        "bill_number": "SF 2417",
+        "lead_sponsors": "Senate Committee on Technology",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 806,
+        "state": "Iowa",
+        "state_abbr": "IA",
+        "bill_type": "S",
+        "bill_num": "2417",
+        "bill_number": "S 2417",
+        "status": "Enacted - Signed by Governor"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "ID",
+        "chamber_letter": "S",
+        "digits": "1297"
+      },
+      "fpf_record": {
+        "id": 15,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "ID",
+        "bill_number": "SB 1297",
+        "lead_sponsors": "State Affairs Committee",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 614,
+        "state": "Idaho",
+        "state_abbr": "ID",
+        "bill_type": "S",
+        "bill_num": "1297",
+        "bill_number": "S 1297",
+        "status": "Enacted - Act No. 249"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "NE",
+        "chamber_letter": "L",
+        "digits": "525"
+      },
+      "fpf_record": {
+        "id": 17,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "NE",
+        "bill_number": "LB 525",
+        "lead_sponsors": "Sen. Jacobson (R)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 1392,
+        "state": "Nebraska",
+        "state_abbr": "NE",
+        "bill_type": "L",
+        "bill_num": "525",
+        "bill_number": "L 525",
+        "status": "Enacted - Signed by Governor"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "NH",
+        "chamber_letter": "H",
+        "digits": "143"
+      },
+      "fpf_record": {
+        "id": 18,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "NH",
+        "bill_number": "HB 143",
+        "lead_sponsors": "Rep. Harvey-Bolia (R)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 1430,
+        "state": "New Hampshire",
+        "state_abbr": "NH",
+        "bill_type": "H",
+        "bill_num": "143",
+        "bill_number": "H 143",
+        "status": "Enacted - Act No. 270"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "NY",
+        "chamber_letter": "S",
+        "digits": "3008"
+      },
+      "fpf_record": {
+        "id": 19,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "NY",
+        "bill_number": "S 3008C",
+        "lead_sponsors": "Sen. Gonzalez (D)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 1784,
+        "state": "New York",
+        "state_abbr": "NY",
+        "bill_type": "S",
+        "bill_num": "3008",
+        "bill_number": "S 3008",
+        "status": "Enacted - Act No. 58"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "NY",
+        "chamber_letter": "S",
+        "digits": "9008"
+      },
+      "fpf_record": {
+        "id": 20,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "NY",
+        "bill_number": "S 9008C",
+        "lead_sponsors": "FY27 Budget",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 1676,
+        "state": "New York",
+        "state_abbr": "NY",
+        "bill_type": "S",
+        "bill_num": "9008",
+        "bill_number": "S 9008",
+        "status": "Pending - SENATE"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "OR",
+        "chamber_letter": "S",
+        "digits": "1546"
+      },
+      "fpf_record": {
+        "id": 21,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "OR",
+        "bill_number": "SB 1546",
+        "lead_sponsors": "House Committee on Behavioral Health",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 2034,
+        "state": "Oregon",
+        "state_abbr": "OR",
+        "bill_type": "S",
+        "bill_num": "1546",
+        "bill_number": "S 1546",
+        "status": "Enacted - Act No. 00085"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "RI",
+        "chamber_letter": "S",
+        "digits": "2195"
+      },
+      "fpf_record": {
+        "id": 22,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "RI",
+        "bill_number": "SB 2195",
+        "lead_sponsors": "Sen. Urso (D)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 2136,
+        "state": "Rhode Island",
+        "state_abbr": "RI",
+        "bill_type": "S",
+        "bill_num": "2195",
+        "bill_number": "S 2195",
+        "status": "Enacted - Signed by Governor"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "UT",
+        "chamber_letter": "H",
+        "digits": "452"
+      },
+      "fpf_record": {
+        "id": 23,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "UT",
+        "bill_number": "HB 452",
+        "lead_sponsors": "Rep. Moss (R)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 2408,
+        "state": "Utah",
+        "state_abbr": "UT",
+        "bill_type": "H",
+        "bill_num": "452",
+        "bill_number": "H 452",
+        "status": "Enacted - Act No. 269"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "WA",
+        "chamber_letter": "H",
+        "digits": "2225"
+      },
+      "fpf_record": {
+        "id": 24,
+        "category": "Enacted Chatbot Legislation",
+        "jurisdiction": "WA",
+        "bill_number": "HB 2225",
+        "lead_sponsors": "Rep. Callan (D)",
+        "status": "Signed by Governor"
+      },
+      "ncsl_record": {
+        "id": 2531,
+        "state": "Washington",
+        "state_abbr": "WA",
+        "bill_type": "H",
+        "bill_num": "2225",
+        "bill_number": "H 2225",
+        "status": "Enacted - Act No. 168"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "AZ",
+        "chamber_letter": "H",
+        "digits": "2311"
+      },
+      "fpf_record": {
+        "id": 25,
+        "category": "Inactive Legislation",
+        "jurisdiction": "AZ",
+        "bill_number": "HB 2311",
+        "lead_sponsors": "Rep. Rivero (R)",
+        "status": "Vetoed"
+      },
+      "ncsl_record": {
+        "id": 52,
+        "state": "Arizona",
+        "state_abbr": "AZ",
+        "bill_type": "H",
+        "bill_num": "2311",
+        "bill_number": "H 2311",
+        "status": "Vetoed - Vetoed by Governor"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "HI",
+        "chamber_letter": "H",
+        "digits": "1782"
+      },
+      "fpf_record": {
+        "id": 26,
+        "category": "Inactive Legislation",
+        "jurisdiction": "HI",
+        "bill_number": "HB 1782",
+        "lead_sponsors": "Rep. La Chica (D)",
+        "status": "Inactive"
+      },
+      "ncsl_record": {
+        "id": 518,
+        "state": "Hawaii",
+        "state_abbr": "HI",
+        "bill_type": "H",
+        "bill_num": "1782",
+        "bill_number": "H 1782",
+        "status": "Failed - Adjourned - Conference Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "MD",
+        "chamber_letter": "H",
+        "digits": "952"
+      },
+      "fpf_record": {
+        "id": 27,
+        "category": "Inactive Legislation",
+        "jurisdiction": "MD",
+        "bill_number": "HB 952",
+        "lead_sponsors": "Del. Buckel (R)",
+        "status": "Inactive"
+      },
+      "ncsl_record": {
+        "id": 978,
+        "state": "Maryland",
+        "state_abbr": "MD",
+        "bill_type": "H",
+        "bill_num": "952",
+        "bill_number": "H 952",
+        "status": "Failed - Adjourned - Senate Finance Committee"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "OK",
+        "chamber_letter": "H",
+        "digits": "3544"
+      },
+      "fpf_record": {
+        "id": 29,
+        "category": "Inactive Legislation",
+        "jurisdiction": "OK",
+        "bill_number": "HB 3544",
+        "lead_sponsors": "Rep. Alonso-Sandoval (D)",
+        "status": "Inactive"
+      },
+      "ncsl_record": {
+        "id": 2002,
+        "state": "Oklahoma",
+        "state_abbr": "OK",
+        "bill_type": "H",
+        "bill_num": "3544",
+        "bill_number": "H 3544",
+        "status": "Failed - Adjourned - SENATE"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "OK",
+        "chamber_letter": "S",
+        "digits": "1521"
+      },
+      "fpf_record": {
+        "id": 30,
+        "category": "Inactive Legislation",
+        "jurisdiction": "OK",
+        "bill_number": "SB 1521",
+        "lead_sponsors": "Sen. Hamilton (R)",
+        "status": "Inactive"
+      },
+      "ncsl_record": {
+        "id": 1988,
+        "state": "Oklahoma",
+        "state_abbr": "OK",
+        "bill_type": "S",
+        "bill_num": "1521",
+        "bill_number": "S 1521",
+        "status": "Failed - Adjourned - Concurrence"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "UT",
+        "chamber_letter": "H",
+        "digits": "438"
+      },
+      "fpf_record": {
+        "id": 31,
+        "category": "Inactive Legislation",
+        "jurisdiction": "UT",
+        "bill_number": "HB 438",
+        "lead_sponsors": "Rep. Fiefia (R)",
+        "status": "Inactive"
+      },
+      "ncsl_record": {
+        "id": 2392,
+        "state": "Utah",
+        "state_abbr": "UT",
+        "bill_type": "H",
+        "bill_num": "438",
+        "bill_number": "H 438",
+        "status": "Failed - Enacting Clause Struck"
+      }
+    },
+    {
+      "match_key": {
+        "state_abbr": "WA",
+        "chamber_letter": "S",
+        "digits": "5984"
+      },
+      "fpf_record": {
+        "id": 32,
+        "category": "Inactive Legislation",
+        "jurisdiction": "WA",
+        "bill_number": "SB 5984",
+        "lead_sponsors": "Sen. Wellman (D)",
+        "status": "Inactive"
+      },
+      "ncsl_record": {
+        "id": 2547,
+        "state": "Washington",
+        "state_abbr": "WA",
+        "bill_type": "S",
+        "bill_num": "5984",
+        "bill_number": "S 5984",
+        "status": "Failed - Adjourned - House Rules Committee"
+      }
+    }
+  ],
+  "unmatched_fpf_records": [
+    {
+      "id": 16,
+      "category": "Enacted Chatbot Legislation",
+      "jurisdiction": "ME",
+      "bill_number": "LD 1727",
+      "lead_sponsors": "Rep. Kuhn (D)",
+      "status": "Signed by Governor"
+    },
+    {
+      "id": 28,
+      "category": "Inactive Legislation",
+      "jurisdiction": "ME",
+      "bill_number": "LD 2162",
+      "lead_sponsors": "Rep. Gramlich (D)",
+      "status": "Inactive"
+    }
+  ]
+}
