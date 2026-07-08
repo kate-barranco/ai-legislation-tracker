@@ -21,6 +21,7 @@ from reference_data import (
     ELECTION_SOURCE,
     POPULATION_SOURCE,
     STATE_2024_PRES_WINNER,
+    STATE_NAMES,
     STATE_POPULATION,
 )
 
@@ -46,6 +47,21 @@ ATTRIBUTION = (
     "(blog posts, comments, reports, briefs, testimony, letters, podcasts); "
     "see limitations below for what was actually captured."
 )
+
+# Which government level each bill-level source actually covers, and the
+# full name behind each acronym. This is a factual classification of what
+# each source's own data contains (e.g. FPF's tracker table is 100% state
+# jurisdictions despite the source's own page prose mentioning federal
+# proposals it doesn't actually list -- see LIMITATIONS) -- not an editorial
+# grouping. CDT is intentionally absent: it is not bill-level data at all
+# (see LIMITATIONS) so it has no "level" and is never included in the
+# unified bill browser below.
+SOURCE_META = {
+    "ncsl": {"label": "NCSL", "full_name": "National Conference of State Legislatures", "level": "state"},
+    "fpf": {"label": "FPF", "full_name": "Future of Privacy Forum", "level": "state"},
+    "aaf": {"label": "AAF", "full_name": "American Action Forum", "level": "federal"},
+    "brennan_center": {"label": "Brennan Center", "full_name": "Brennan Center for Justice", "level": "federal"},
+}
 
 STATUS_OUTCOME = {
     "Enacted": "positive-final",
@@ -181,6 +197,8 @@ def api_meta():
             "ncsl": ncsl_meta, "aaf": aaf_meta, "fpf": fpf_meta,
             "brennan_center": brennan_meta, "cdt": cdt_meta,
         },
+        "source_meta": SOURCE_META,
+        "state_names": STATE_NAMES,
         "limitations": LIMITATIONS,
     })
 
@@ -867,6 +885,98 @@ def api_highlights():
         "unclassified_state_bills": unknown,
         "federal_bills_aaf": aaf_total,
         "federal_bills_brennan_center": brennan_total,
+    })
+
+
+@app.route("/api/bills/all")
+def api_bills_all():
+    """
+    One flat, live-queried list of every individual bill record across the
+    four bill-level sources (NCSL, AAF, Brennan Center, FPF), each row
+    flagged with its source and government level. This is the "everything
+    in one place, source flagged" browse view -- it does NOT merge or
+    normalize any source's own status/category text (each source's
+    taxonomy is non-aligned with the others -- see LIMITATIONS), it only
+    tags each row with where it came from so it can be filtered.
+
+    CDT is intentionally excluded -- it is not bill-level data (see
+    LIMITATIONS) and has no state/status/bill-number fields to flag here.
+    """
+    conn = get_db()
+    cur = conn.cursor()
+    out = []
+
+    for r in cur.execute(
+        "SELECT state_abbr, state, bill_number, status, date_of_last_action_iso, description "
+        "FROM ncsl_bills"
+    ):
+        out.append({
+            "source": "ncsl", "level": "state",
+            "jurisdiction": r["state_abbr"], "jurisdiction_full": r["state"],
+            "bill_number": r["bill_number"], "title": r["description"],
+            "status_raw": r["status"], "date": r["date_of_last_action_iso"],
+            "url": None,
+        })
+
+    for r in cur.execute(
+        "SELECT jurisdiction, bill_number, category, status FROM fpf_chatbot_bills"
+    ):
+        out.append({
+            "source": "fpf", "level": "state",
+            "jurisdiction": r["jurisdiction"],
+            "jurisdiction_full": STATE_NAMES.get(r["jurisdiction"], r["jurisdiction"]),
+            "bill_number": r["bill_number"], "title": r["category"],
+            "status_raw": r["status"], "date": None,
+            "url": None,
+        })
+
+    for r in cur.execute(
+        "SELECT bill_name, classification, chamber, bill_status_field FROM aaf_bills"
+    ):
+        out.append({
+            "source": "aaf", "level": "federal",
+            "jurisdiction": "US-Congress",
+            "jurisdiction_full": f"U.S. Congress ({r['chamber']})" if r["chamber"] else "U.S. Congress",
+            "bill_number": r["bill_status_field"], "title": r["bill_name"],
+            "status_raw": None, "date": None,
+            "url": None,
+        })
+
+    for r in cur.execute(
+        "SELECT congress, bill_number_display, title, status, last_action_text, "
+        "last_action_date_iso, date_introduced_iso, congress_gov_url, url_derived_chamber "
+        "FROM brennan_center_bills"
+    ):
+        out.append({
+            "source": "brennan_center", "level": "federal",
+            "jurisdiction": "US-Congress",
+            "jurisdiction_full": (
+                f"U.S. Congress ({r['congress']}, {r['url_derived_chamber']})"
+                if r["url_derived_chamber"] else f"U.S. Congress ({r['congress']})"
+            ),
+            "bill_number": r["bill_number_display"], "title": r["title"],
+            "status_raw": r["status"] or r["last_action_text"],
+            "date": r["last_action_date_iso"] or r["date_introduced_iso"],
+            "url": r["congress_gov_url"],
+        })
+
+    conn.close()
+
+    level_counts = Counter(row["level"] for row in out)
+    source_counts = Counter(row["source"] for row in out)
+
+    return jsonify({
+        "note": (
+            "Every row is a live, unaltered read from its own source table -- "
+            "flagged with source and level so this list can be filtered, not "
+            "merged into a single taxonomy (the four sources use non-aligned "
+            "status/category schemas; see /api/meta limitations)."
+        ),
+        "source_meta": SOURCE_META,
+        "total": len(out),
+        "level_counts": dict(level_counts),
+        "source_counts": dict(source_counts),
+        "bills": out,
     })
 
 

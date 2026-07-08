@@ -58,3 +58,27 @@ ELECTION_SOURCE = "2024 U.S. presidential election, statewide popular-vote winne
 # scraped NCSL data -- not itself scraped, just the standard list of US
 # states/DC/territories.
 ALL_US_JURISDICTIONS = sorted(list(STATE_POPULATION.keys()) + ["AS", "MP"])
+
+# Standard postal-code -> full name mapping (public record, not scraped from
+# any source). Used only so the UI can show a full jurisdiction name on hover
+# for a two-letter code -- never used to alter, group, or interpret any bill.
+STATE_NAMES = {
+    "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
+    "CA": "California", "CO": "Colorado", "CT": "Connecticut",
+    "DE": "Delaware", "DC": "District of Columbia", "FL": "Florida",
+    "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois",
+    "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky",
+    "LA": "Louisiana", "ME": "Maine", "MD": "Maryland",
+    "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota",
+    "MS": "Mississippi", "MO": "Missouri", "MT": "Montana",
+    "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire",
+    "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York",
+    "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio",
+    "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania",
+    "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota",
+    "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont",
+    "VA": "Virginia", "WA": "Washington", "WV": "West Virginia",
+    "WI": "Wisconsin", "WY": "Wyoming",
+    "PR": "Puerto Rico", "GU": "Guam", "VI": "U.S. Virgin Islands",
+    "AS": "American Samoa", "MP": "Northern Mariana Islands",
+}
