@@ -82,6 +82,29 @@ LIMITATIONS = [
     "state-level metric (per-capita volume, red/blue grouping, category "
     "concentration by state, first-mover states, zero-legislation states, "
     "outlier states, carryover).",
+    "AAF's bill_status_field bill identifiers (e.g. \"S4476\") were resolved "
+    "to real congress.gov URLs by constructing the candidate link and then "
+    "verifying the fetched page's title actually matches the stored bill "
+    "name -- not by pattern-matching alone, since AAF's own source data "
+    "contains at least one confirmed identifier error. 81 of 84 bills "
+    "verified successfully; 3 have no link: one (id 66) has bill_status_field "
+    "\"Unnamed\", one (the SPEED Act) has a blank bill_status_field (a known, "
+    "documented truncation at the AAF source-fetch boundary -- see below), "
+    "and one (\"Maintaining Innovation and Safe Technologies Act\", "
+    "bill_status_field \"118th S4487\") could not be verified at all -- the "
+    "constructed URL for that identifier, in both chambers, resolves to two "
+    "different, unrelated bills, indicating an error in AAF's own source "
+    "data rather than this app's link construction. No link is fabricated "
+    "for that bill.",
+    "NCSL's 2,655 state bills and FPF's 32 state bills have no per-bill URL "
+    "field in the source data at all (confirmed against the original raw "
+    "scrapes, not just the built database) and none was added -- "
+    "constructing a reliable link per state bill would require a fresh "
+    "lookup against a service like the official LegiScan or Open States "
+    "APIs (both blocked further automated access attempts in this session "
+    "with bot-detection challenges and rate limits when tried without an "
+    "API key). Only Brennan Center (federal) and now AAF (federal) bills "
+    "have real links in this app; state-level bills do not.",
     "NCSL topics, AAF classifications, and FPF policy-area columns are three "
     "different, non-aligned taxonomies from three different organizations. "
     "No single unified \"category\" comparison is computed across all three "
@@ -931,7 +954,7 @@ def api_bills_all():
         })
 
     for r in cur.execute(
-        "SELECT bill_name, classification, chamber, bill_status_field FROM aaf_bills"
+        "SELECT bill_name, classification, chamber, bill_status_field, bill_url FROM aaf_bills"
     ):
         out.append({
             "source": "aaf", "level": "federal",
@@ -939,7 +962,7 @@ def api_bills_all():
             "jurisdiction_full": f"U.S. Congress ({r['chamber']})" if r["chamber"] else "U.S. Congress",
             "bill_number": r["bill_status_field"], "title": r["bill_name"],
             "status_raw": None, "date": None,
-            "url": None,
+            "url": r["bill_url"],
         })
 
     for r in cur.execute(

@@ -4,3 +4,6 @@ __pycache__/
 .venv/
 venv/
 *.log
+NOTES.md
+data/cookie_cutter_*
+data/aaf_links_verified.json
