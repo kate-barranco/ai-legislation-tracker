@@ -6,4 +6,6 @@ venv/
 *.log
 NOTES.md
 data/cookie_cutter_*
+!data/cookie_cutter_partisan_report.json
 data/aaf_links_verified.json
+.env

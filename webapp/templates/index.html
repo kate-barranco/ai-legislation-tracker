@@ -295,6 +295,40 @@
   }
   .cdt-note-card h3 { margin-top: 0; }
 
+  /* Cookie-cutter cluster cards */
+  .cluster-card {
+    background: #fff; border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);
+    border-radius: 10px; padding: 1.25rem 1.4rem; margin-bottom: 1.25rem;
+  }
+  .cluster-card-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+  .cluster-card h3 { margin: 0 0 0.15rem; }
+  .cluster-sim-badge {
+    font-size: 0.76rem; font-weight: 700; color: var(--color-secondary); background: var(--color-muted);
+    padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap;
+  }
+  .cluster-states { margin: 0.4rem 0 0.7rem; }
+  .cluster-quote {
+    border-left: 3px solid var(--color-border); background: var(--color-bg);
+    padding: 0.55rem 0.9rem; margin: 0.5rem 0 0.9rem; font-size: 0.88rem;
+  }
+  .cluster-quote div { margin-bottom: 0.3rem; }
+  .cluster-quote div:last-child { margin-bottom: 0; }
+  .cluster-quote .quote-tag { font-style: normal; font-weight: 700; color: var(--color-heading); margin-right: 0.4rem; }
+  .cluster-quote .quote-text { font-style: italic; color: var(--color-text); }
+  .cluster-party-line { font-size: 0.9rem; margin: 0.6rem 0 0.9rem; }
+  .party-tag {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; color: #fff;
+    padding: 0.08rem 0.5rem; border-radius: 999px; margin-left: 0.35rem; vertical-align: 1px;
+  }
+  .party-tag.party-D { background: #1E40AF; }
+  .party-tag.party-R { background: #DC2626; }
+  .party-tag.party-I { background: #7C3AED; }
+  .party-tag.party-Unknown { background: #64748B; }
+  .cluster-card table { margin-bottom: 0.5rem; font-size: 0.83rem; }
+  .cluster-research-note { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.55; }
+  .cluster-research-note ul { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+  .cluster-research-note li { margin-bottom: 0.25rem; }
+
   footer.page-footer { text-align: center; padding: 2rem 1.5rem; color: var(--color-text-muted); font-size: 0.82rem; }
 
   /* Filter-driven visibility */
@@ -326,6 +360,7 @@
       <a href="#bipartisan">Bipartisan?</a>
       <a href="#passing">What's Passing</a>
       <a href="#momentum">Momentum</a>
+      <a href="#cookie-cutter">Cookie-Cutter Bills</a>
       <a href="#chatbot">Chatbot Laws</a>
       <a href="#federal">Federal / Congress</a>
       <a href="#methods">Sources &amp; Methods</a>
@@ -557,6 +592,22 @@
       <strong>How it's calculated (<abbr title="Herfindahl-Hirschman Index — a standard concentration measure used in economics, scaled 0–10,000">HHI</abbr>):</strong> for each state, take the percentage share of its bills that fall under each topic, square each percentage, then add up the squares. Example: a state whose bills are 50% one topic and 50% another scores 50² + 50² = 5,000. A state whose one topic tag covers 100% of its bills scores the maximum, 100² = 10,000. A state whose bills are spread evenly across, say, 10 topics (10% each) scores just 10 × 10² = 1,000. So: closer to 10,000 = concentrated on very few topics; closer to 0 = broad, spread-out focus. This exact formula is borrowed from economics, where it's normally used to measure how concentrated a market is among a few companies — here it's applied to topics instead of companies.
     </div>
     <table id="concentration-table"><thead><tr><th>State</th><th>Top topics</th><th>Concentration score (0–10,000)</th></tr></thead><tbody></tbody></table>
+  </details>
+</section>
+
+<section class="theme-section reveal level-state" data-level="state" id="cookie-cutter">
+  <h2 class="section-title"><span class="level-badge state">State</span>Cookie-cutter bills: near-identical text across states</h2>
+  <p class="lede">A separate text-similarity pass (not part of NCSL's own data) found 8 groups of state bills whose short summaries are near word-for-word matches of each other — a signal, though not proof, of shared drafting. For each group, we checked who actually sponsors the bills (a verifiable fact from this tracker's own database) and looked for public reporting on who wrote the underlying template (a separate, sourced research pass — reported as "not found" wherever no citable source exists, never inferred from party or state political lean).</p>
+  <div id="cookie-cutter-insight" class="insight-line loading">Loading…</div>
+
+  <details class="methods-toggle"><summary>How clusters were identified, and what "similarity score" means</summary>
+    <div class="method-note" id="cookie-cutter-method"></div>
+  </details>
+
+  <div id="cluster-cards"></div>
+
+  <details class="methods-toggle"><summary>Known limitations of this analysis</summary>
+    <ul class="limitations" id="cookie-cutter-limitations"></ul>
   </details>
 </section>
 
@@ -1345,6 +1396,82 @@ async function loadCdt() {
   fillTableBody('cdt-creators-table', creators.top_creators.map(c=>[c.creator_name, c.item_count]));
 }
 
+function partyTag(party) {
+  const p = party || 'Unknown';
+  const known = ['D', 'R', 'I'].includes(p) ? p : 'Unknown';
+  return `<span class="party-tag party-${known}">${p === 'Unknown' || !party ? 'Unknown' : party}</span>`;
+}
+
+function clusterCardHtml(c) {
+  const quoteRows = c.bills.map(b =>
+    `<div><span class="quote-tag">${stateAbbr(b.state_abbr)} ${b.bill_number} (${b.year}):</span><span class="quote-text">"${b.summary}"</span></div>`
+  ).join('');
+
+  const partyByState = c.states_by_sponsor_party;
+  const distinctParties = c.distinct_parties_across_cluster;
+  let partyLine;
+  if (distinctParties.length <= 1) {
+    const p = distinctParties[0] || 'Unknown';
+    partyLine = `Every identified sponsor in this cluster belongs to the same party: ${partyTag(p)}`;
+  } else {
+    partyLine = 'Sponsor party varies by state: ' + Object.entries(partyByState).map(([party, states]) =>
+      `${states.map(stateAbbr).join('/')} ${partyTag(party)}`
+    ).join('  vs.  ');
+  }
+
+  const billRows = c.bills.map(b => {
+    const cos = b.sponsor_is_committee ? '—' : (b.cosponsors.length ? b.cosponsors.map(cs => `${cs.name} ${partyTag(cs.party)}`).join(', ') : '<span class="loading" style="font-style:normal;">none listed</span>');
+    const sponsor = b.sponsor_is_committee ? `${b.sponsor_raw} <span class="party-tag party-Unknown">Committee</span>` : `${b.sponsor_name || '—'} ${partyTag(b.sponsor_party)}`;
+    const overrideMark = b.sponsor_party_override_note ? ' <abbr title="' + b.sponsor_party_override_note.replace(/"/g, '&quot;') + '">*</abbr>' : '';
+    return [stateAbbr(b.state_abbr), `${b.bill_number} (${b.year})`, sponsor + overrideMark, cos];
+  });
+
+  const sources = (c.external_research.sources || []).map(s => `<li><a href="${s.url}" target="_blank" rel="noopener">${s.label}</a></li>`).join('');
+
+  return `
+    <div class="cluster-card" data-cluster="${c.cluster_id}">
+      <div class="cluster-card-head">
+        <h3>${c.theme}</h3>
+        <span class="cluster-sim-badge">Similarity: ${(c.similarity_score*100).toFixed(0)}% (range ${(c.min_similarity_score*100).toFixed(0)}–${(c.max_similarity_score*100).toFixed(0)}%)</span>
+      </div>
+      <div class="cluster-states">${c.states_involved.map(s => `<span class="pill">${stateAbbr(s)}</span>`).join('')}</div>
+      <div class="cluster-quote">${quoteRows}</div>
+      <div class="cluster-party-line">${partyLine}</div>
+      <table>
+        <thead><tr><th>State</th><th>Bill</th><th>Primary sponsor (party)</th><th>Co-sponsors (party)</th></tr></thead>
+        <tbody>${billRows.map(r => `<tr>${r.map(cell=>`<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table>
+      <details class="methods-toggle"><summary>Who wrote this? (sourced research pass)</summary>
+        <div class="cluster-research-note">
+          ${c.external_research.bottom_line}
+          ${sources ? `<ul>${sources}</ul>` : ''}
+        </div>
+      </details>
+    </div>`;
+}
+
+async function loadCookieCutter() {
+  const r = await getJSON('/api/cookie_cutter/clusters');
+  document.getElementById('cookie-cutter-method').textContent = r.method;
+  document.getElementById('cookie-cutter-limitations').innerHTML = r.limitations.map(l => `<li>${l}</li>`).join('');
+
+  document.getElementById('cluster-cards').innerHTML = r.clusters.map(clusterCardHtml).join('');
+
+  const singleParty = r.clusters.filter(c => c.distinct_parties_across_cluster.length <= 1);
+  const mixed = r.clusters.filter(c => c.distinct_parties_across_cluster.length > 1);
+  const singleD = singleParty.filter(c => c.distinct_parties_across_cluster[0] === 'D').length;
+  const singleR = singleParty.filter(c => c.distinct_parties_across_cluster[0] === 'R').length;
+  const crossPartyBill = r.clusters.flatMap(c => c.bills.filter(b => b.bill_sponsorship_type === 'bipartisan_multi_party').map(b => ({...b, cluster_id: c.cluster_id})));
+
+  document.getElementById('cookie-cutter-insight').innerHTML =
+    `${fmt(r.clusters.length)} clusters, ${fmt(r.clusters.reduce((a,c)=>a+c.bills.length,0))} bills. ${singleParty.length} of ${r.clusters.length} clusters have every identified sponsor from a single party (${singleD} entirely Democratic, ${singleR} entirely Republican); the other ${mixed.length} split by party depending on the state. ` +
+    (crossPartyBill.length
+      ? `Only ${crossPartyBill.length} bill${crossPartyBill.length===1?'':'s'} in the whole dataset ${crossPartyBill.length===1?'has':'have'} a cross-party co-sponsor list within the bill itself: ${crossPartyBill.map(b=>`${stateAbbr(b.state_abbr)} ${b.bill_number}`).join(', ')}.`
+      : 'No single bill in this dataset has a cross-party co-sponsor list within the bill itself.') +
+    ` These are registered sponsor parties from this tracker's own database, not inferred from topic or state political lean.`;
+  document.getElementById('cookie-cutter-insight').classList.remove('loading');
+}
+
 async function loadDedupe() {
   const d = await getJSON('/api/dedupe');
   document.getElementById('dedupe-method').textContent = d.method;
@@ -1367,6 +1494,7 @@ async function loadDedupe() {
   loadFpf();
   loadBrennanCenter();
   loadCdt();
+  loadCookieCutter();
   loadDedupe();
   setupRevealObserver();
 })();

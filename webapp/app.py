@@ -9,6 +9,7 @@ very next request, with no redeploy step.
 Descriptive statistics only. No endpoint here ranks, scores, or comments on
 the merits of any individual bill -- only aggregate counts/rates/breakdowns.
 """
+import json
 import sqlite3
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
@@ -28,6 +29,7 @@ from reference_data import (
 ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = ROOT / "data" / "ai_legislation.db"
 DEDUPE_REPORT_PATH = ROOT / "data" / "dedupe_report_ncsl_fpf.json"
+COOKIE_CUTTER_REPORT_PATH = ROOT / "data" / "cookie_cutter_partisan_report.json"
 
 app = Flask(__name__)
 
@@ -1003,9 +1005,15 @@ def api_bills_all():
     })
 
 
+@app.route("/api/cookie_cutter/clusters")
+def api_cookie_cutter_clusters():
+    with open(COOKIE_CUTTER_REPORT_PATH) as f:
+        report = json.load(f)
+    return jsonify(report)
+
+
 @app.route("/api/dedupe")
 def api_dedupe():
-    import json
     with open(DEDUPE_REPORT_PATH) as f:
         report = json.load(f)
     return jsonify({

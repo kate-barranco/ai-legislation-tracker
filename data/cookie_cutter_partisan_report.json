@@ -1,0 +1,794 @@
+{
+  "method": "Clusters and similarity scores come from a prior text-similarity pass (difflib.SequenceMatcher on NCSL's `summary` field, threshold 0.72; see data/cookie_cutter_report.md). Sponsor and co-sponsor party come from live joins of ncsl_bills + ncsl_bill_additional_authors, with one manual override (ME S 531 primary sponsor party, undocumented in NCSL data, verified against the Maine Legislature's own bill text). Organizational attribution ('who wrote this') is not inferred from party or state political lean -- it is reproduced from a separate, sourced research pass (data/cookie_cutter_external_research.md) and stated as 'not found' wherever that pass found no citable source.",
+  "note": "A bill's sponsor party is a verifiable, registered fact (matched against this tracker's own database). A cluster's overall party pattern (e.g. 'all sponsors are Democrats,' 'split between states') is a description of who introduced these specific bills, not a claim about which party 'owns' the underlying issue -- correlation with a state's overall political lean is not asserted here.",
+  "limitations": [
+    "Bill-level 'summary' fields (used for clustering) are NCSL's own short paraphrases, not the full statutory text -- similarity scores reflect summary-level, not verified bill-text, overlap.",
+    "Sponsor party reflects the primary author's registered party at the time NCSL's data was captured; it does not reflect every co-sponsor's stance on the bill's substance.",
+    "One bill in this dataset (MA S 2632) is sponsored by a legislative committee, not an individual, and is excluded from party tallies as unattributable.",
+    "'No source found' in the external-research notes below means no citable public source was located during that research pass -- it is not a claim that no such source exists."
+  ],
+  "clusters": [
+    {
+      "cluster_id": 1,
+      "theme": "Algorithmic rent-fixing ban",
+      "similarity_score": 0.767,
+      "min_similarity_score": 0.655,
+      "max_similarity_score": 0.889,
+      "states_involved": [
+        "MA",
+        "NC",
+        "WA"
+      ],
+      "representative_summary": "Prevents algorithmic rent fixing in the rental housing market.",
+      "bills": [
+        {
+          "state_abbr": "MA",
+          "bill_number": "S 1016",
+          "year": "2025",
+          "summary": "Establishes the preventing algorithmic rent fixing in the Rental Housing Market Act.",
+          "sponsor_name": "Moore M",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Moore M (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "MA",
+          "bill_number": "H 1564",
+          "year": "2025",
+          "summary": "Relates to preventing algorithmic rent fixing in the rental housing market.",
+          "sponsor_name": "Sabadosa",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Sabadosa (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "NC",
+          "bill_number": "H 970",
+          "year": "2025",
+          "summary": "Prevents algorithmic rent fixing in the rental housing market.",
+          "sponsor_name": "Longest",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Longest (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "WA",
+          "bill_number": "S 5469",
+          "year": "2025",
+          "summary": "Prohibits algorithmic rent fixing and noncompete agreements in the rental housing market.",
+          "sponsor_name": "Salomon",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Salomon (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [
+            {
+              "name": "Hasegawa",
+              "party": "D"
+            },
+            {
+              "name": "Pedersen",
+              "party": "D"
+            },
+            {
+              "name": "Frame",
+              "party": "D"
+            },
+            {
+              "name": "Valdez",
+              "party": "D"
+            },
+            {
+              "name": "Shewmake",
+              "party": "D"
+            },
+            {
+              "name": "Lovelett",
+              "party": "D"
+            },
+            {
+              "name": "Nobles",
+              "party": "D"
+            },
+            {
+              "name": "Trudeau",
+              "party": "D"
+            },
+            {
+              "name": "Bateman",
+              "party": "D"
+            }
+          ],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "D"
+      ],
+      "states_by_sponsor_party": {
+        "D": [
+          "MA",
+          "NC",
+          "WA"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "Real, heavily-covered, nationwide legislative wave (RealPage antitrust fallout) with identifiable advocacy-side voices (Consumer Federation of America, NLIHC/NHLP/Tenant Union Federation) and industry-side opposition (RealPage, National Apartment Association) -- but no citable source was found naming a specific organization as the drafter/template-author of the identical \"algorithmic rent fixing in the rental housing market\" language shared by MA, NC, and WA specifically.",
+        "sources": [
+          {
+            "label": "Shelterforce, \"Legislators Push Back Against 'Rent-Setting' Software\" (2025)",
+            "url": "https://shelterforce.org/2025/07/11/legislators-push-back-against-rent-setting-software/"
+          },
+          {
+            "label": "Consumer Reports, 2025 algorithmic pricing bill tracker",
+            "url": "https://innovation.consumerreports.org/how-u-s-states-are-tackling-algorithmic-pricing-2025-bill-tracker-and-analysis/"
+          },
+          {
+            "label": "National Housing Law Project / NLIHC / Tenant Union Federation, \"National Tenants Bill of Rights\"",
+            "url": "https://www.nhlp.org/press-release/national-housing-law-project-national-low-income-housing-coalition-and-tenant-union-federation-release-national-tenants-bill-of-rights-a-practical-policy-agenda-for-renters/"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": 2,
+      "theme": "AI in mental health treatment",
+      "similarity_score": 0.756,
+      "min_similarity_score": 0.756,
+      "max_similarity_score": 0.756,
+      "states_involved": [
+        "RI",
+        "WV"
+      ],
+      "representative_summary": "Establishes regulations regarding the use of artificial intelligence in mental healthcare treatments.",
+      "bills": [
+        {
+          "state_abbr": "RI",
+          "bill_number": "S 2197",
+          "year": "2026",
+          "summary": "Establishes regulations regarding the use of artificial intelligence in mental healthcare treatments.",
+          "sponsor_name": "Urso",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Urso (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "RI",
+          "bill_number": "H 7349",
+          "year": "2026",
+          "summary": "Establishes regulations regarding the use of artificial intelligence in mental healthcare treatments.",
+          "sponsor_name": "Spears",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Spears (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "WV",
+          "bill_number": "H 4770",
+          "year": "2026",
+          "summary": "Establishes regulations governing the use of artificial intelligence in the administration and delivery of mental health care in the State.",
+          "sponsor_name": "Worrell",
+          "sponsor_party": "R",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Worrell (R)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "D",
+        "R"
+      ],
+      "states_by_sponsor_party": {
+        "D": [
+          "RI"
+        ],
+        "R": [
+          "WV"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "No public reporting found connecting this cluster to a specific organization. The Transparency Coalition's legislative tracker reports on both RI and WV bills but explicitly does not claim authorship or coordination of them, and its own published model bill targets a different subject (chatbot safety for minors, not licensed providers' use of AI in therapy).",
+        "sources": [
+          {
+            "label": "Transparency Coalition legislative update (Mar. 20, 2026)",
+            "url": "https://www.transparencycoalition.ai/news/ai-legislative-update-march20-2026"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": 3,
+      "theme": "Surveillance/algorithmic pricing ban",
+      "similarity_score": 0.741,
+      "min_similarity_score": 0.741,
+      "max_similarity_score": 0.741,
+      "states_involved": [
+        "IA",
+        "NJ"
+      ],
+      "representative_summary": "Prohibits personalized algorithmic pricing and surveillance based pricing by certain retailers in online commerce.",
+      "bills": [
+        {
+          "state_abbr": "IA",
+          "bill_number": "S 2278",
+          "year": "2026",
+          "summary": "Prohibits personalized algorithmic pricing and surveillance pricing at certain food retail establishments, provides civil penalties.",
+          "sponsor_name": "Wahls",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Wahls (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "NJ",
+          "bill_number": "S 4314",
+          "year": "2026",
+          "summary": "Prohibits personalized algorithmic pricing and surveillance based pricing by certain retailers in online commerce.",
+          "sponsor_name": "Cryan",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Cryan (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "D"
+      ],
+      "states_by_sponsor_party": {
+        "D": [
+          "IA",
+          "NJ"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "No source found naming a specific organization as drafter of the IA/NJ bill language. The shared term \"surveillance pricing\" itself traces to a specific, citable, named source -- the FTC's 2024 6(b) study, which coverage says \"popularized the term\" -- plausibly explaining why it appears in both states' bill summaries, though no source ties the actual bill text to any drafting organization.",
+        "sources": [
+          {
+            "label": "FTC, \"Behind the FTC's Inquiry into Surveillance Pricing Practices\" (2024)",
+            "url": "https://www.ftc.gov/policy/advocacy-research/tech-at-ftc/2024/07/behind-ftcs-inquiry-surveillance-pricing-practices"
+          },
+          {
+            "label": "FTC, \"Issue Spotlight: The Rise of Surveillance Pricing\" (PDF)",
+            "url": "https://www.ftc.gov/system/files/ftc_gov/pdf/sp6b-issue-spotlight.pdf"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": 4,
+      "theme": "AI eligibility-discrimination notice requirement",
+      "similarity_score": 0.736,
+      "min_similarity_score": 0.736,
+      "max_similarity_score": 0.736,
+      "states_involved": [
+        "DC",
+        "HI"
+      ],
+      "representative_summary": "Prohibits users of algorithmic decision-making from utilizing algorithmic eligibility determinations in a discriminatory manner, requires corresponding notices to individuals whose personal information is used, provides for appropriate means of civil enforcement.",
+      "bills": [
+        {
+          "state_abbr": "DC",
+          "bill_number": "B 114",
+          "year": "2025",
+          "summary": "Prohibits users of algorithmic decision-making from utilizing algorithmic eligibility determinations in a discriminatory manner, requires corresponding notices to individuals whose personal information is used, provides for appropriate means of civil enforcement.",
+          "sponsor_name": "White",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "White (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "HI",
+          "bill_number": "S 59",
+          "year": "2025",
+          "summary": "Prohibits users of algorithmic decision making from utilizing algorithmic eligibility determinations in a discriminatory manner, requires users of algorithmic decision making to send corresponding notices to individual's whose personal information is used, requires users of algorithmic decision making to submit annual reports to the Department of the Attorney General, provides means of civil enforcement.",
+          "sponsor_name": "Rhoads",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Rhoads (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [
+            {
+              "name": "Lee C",
+              "party": "D"
+            },
+            {
+              "name": "Chang",
+              "party": "D"
+            }
+          ],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "D"
+      ],
+      "states_by_sponsor_party": {
+        "D": [
+          "DC",
+          "HI"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "DC's bill has a well-documented, named origin (DC Attorney General Karl Racine's office, 2021, which called it \"the first comprehensive bill of its type across the country\") and a named advocacy supporter across multiple sessions (EPIC). No citable source ties Hawaii's companion bill to that DC lineage, despite the two bills' near-identical text -- that specific cross-state link remains undocumented in public reporting.",
+        "sources": [
+          {
+            "label": "DC Office of the Attorney General press release (Dec. 9, 2021)",
+            "url": "https://oag.dc.gov/release/ag-racine-introduces-legislation-stop"
+          },
+          {
+            "label": "EPIC, \"EPIC Urges DC Council to Pass Algorithmic Discrimination Bill\"",
+            "url": "https://epic.org/epic-urges-dc-council-to-pass-algorithmic-discrimination-bill/"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": 5,
+      "theme": "\"AI can't be a legal person\" ban",
+      "similarity_score": 0.722,
+      "min_similarity_score": 0.722,
+      "max_similarity_score": 0.722,
+      "states_involved": [
+        "MO",
+        "SC"
+      ],
+      "representative_summary": "Prohibits governmental entities from granting legal personhood to a variety of objects.",
+      "bills": [
+        {
+          "state_abbr": "MO",
+          "bill_number": "H 721",
+          "year": "2025",
+          "summary": "Prohibits governmental entities from granting legal personhood to a variety of objects.",
+          "sponsor_name": "Christensen",
+          "sponsor_party": "R",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Christensen (R)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "SC",
+          "bill_number": "H 3796",
+          "year": "2025",
+          "summary": "Prohibits a governmental entity from granting or recognizing legal personhood in certain items.",
+          "sponsor_name": "Kilmartin",
+          "sponsor_party": "R",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Kilmartin (R)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [
+            {
+              "name": "Beach",
+              "party": "R"
+            }
+          ],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "R"
+      ],
+      "states_by_sponsor_party": {
+        "R": [
+          "MO",
+          "SC"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "The strongest documented evidence of genuine cross-state coordination of any cluster researched -- though still without a single named \"author\" organization. A 2026 academic paper (Smith, Caviola & Alexander, SSRN) finds that AI-personhood-exclusion bills nationally (a group that includes MO H721 and SC H3796) \"follow one of three common templates\" and reflect \"coordinated legislative diffusion rather than independent development,\" with a co-author's public post adding that bills \"share near-verbatim text\" with \"ample evidence of coordination across state lines.\" Even here, no source names who is doing the coordinating.",
+        "sources": [
+          {
+            "label": "Smith, Caviola & Alexander, \"Denying Personhood to AI\" (SSRN, 2026)",
+            "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6829981"
+          },
+          {
+            "label": "\"Can AI Be Conscious in Ohio?\" (Effective Altruism Forum)",
+            "url": "https://forum.nunosempere.com/posts/GkuaqSsGpMzf6dtmd/can-ai-be-conscious-in-ohio"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": 6,
+      "theme": "AI health-insurance utilization-review rules",
+      "similarity_score": 0.721,
+      "min_similarity_score": 0.721,
+      "max_similarity_score": 0.721,
+      "states_involved": [
+        "NY",
+        "TN"
+      ],
+      "representative_summary": "Establishes requirements for the use of artificial intelligence, algorithm, or other software tools in utilization review and management, defines artificial intelligence.",
+      "bills": [
+        {
+          "state_abbr": "NY",
+          "bill_number": "A 3991",
+          "year": "2025",
+          "summary": "Establishes requirements for the use of artificial intelligence, algorithm, or other software tools in utilization review and management, defines artificial intelligence.",
+          "sponsor_name": "Forrest",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Forrest (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "TN",
+          "bill_number": "S 1261",
+          "year": "2025",
+          "summary": "Imposes requirements for health insurance issuers using artificial intelligence, algorithms, or other software for utilization review or utilization management functions.",
+          "sponsor_name": "Yarbro",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Yarbro (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "TN",
+          "bill_number": "H 1382",
+          "year": "2025",
+          "summary": "Imposes requirements for health insurance issuers using artificial intelligence, algorithms, or other software for utilization review or utilization management functions.",
+          "sponsor_name": "Harris",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Harris (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "D"
+      ],
+      "states_by_sponsor_party": {
+        "D": [
+          "NY",
+          "TN"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "There is a real, named, multi-organization ecosystem producing model language in this exact policy area -- the California Medical Association's Physicians Make Decisions Act (spreading to other states per a vendor source), NAIC's Model Bulletin (adopted by roughly two dozen states, though not confirmed for NY/TN), and AMA/NCOIL's draft model act -- but no source found makes a direct, citable claim that NY A3991 or TN S1261/H1382 specifically originated from any one of these.",
+        "sources": [
+          {
+            "label": "California Medical Association press release on the Physicians Make Decisions Act",
+            "url": "https://www.cmadocs.org/newsroom/news/view/ArticleId/50708/"
+          },
+          {
+            "label": "Machinify, \"A Closer Look at the Physicians Make Decisions Act\" (industry vendor blog)",
+            "url": "https://www.machinify.com/resources/a-closer-look-at-the-physicians-make-decisions-act-pmda"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": 7,
+      "theme": "AI regulation by health insurers/providers (broad)",
+      "similarity_score": 0.718,
+      "min_similarity_score": 0.594,
+      "max_similarity_score": 0.908,
+      "states_involved": [
+        "CT",
+        "LA",
+        "ME",
+        "MT",
+        "OH",
+        "TX"
+      ],
+      "representative_summary": "Regulates the use of artificial intelligence by health insurers.",
+      "bills": [
+        {
+          "state_abbr": "CT",
+          "bill_number": "H 5590",
+          "year": "2025",
+          "summary": "Prohibits any health insurer from using artificial intelligence to deny health insurance claims.",
+          "sponsor_name": "Chafee",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Chafee (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "LA",
+          "bill_number": "H 114",
+          "year": "2025",
+          "summary": "Provides for the use of artificial intelligence by healthcare providers.",
+          "sponsor_name": "Domangue",
+          "sponsor_party": "R",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Domangue (R)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "ME",
+          "bill_number": "S 531",
+          "year": "2025",
+          "summary": "Prohibits the use of artificial intelligence in the denial of health insurance claims.",
+          "sponsor_name": "Tipping",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Senator Tipping",
+          "sponsor_party_override_note": "Not recorded in the underlying NCSL dataset. Verified directly against the bill's own text on the Maine Legislature's site (LD 1301 / SP0531, \"Presented by Senator TIPPING of Penobscot\"), cross-checked against the Maine Senate Democrats caucus site and Ballotpedia.",
+          "cosponsors": [
+            {
+              "name": "Daughtry",
+              "party": "D"
+            },
+            {
+              "name": "Bailey",
+              "party": "D"
+            },
+            {
+              "name": "Dodge",
+              "party": "D"
+            },
+            {
+              "name": "Gramlich",
+              "party": "D"
+            },
+            {
+              "name": "Arford",
+              "party": "D"
+            },
+            {
+              "name": "Zager",
+              "party": "D"
+            },
+            {
+              "name": "Cluchey",
+              "party": "D"
+            },
+            {
+              "name": "Reny",
+              "party": "D"
+            },
+            {
+              "name": "Martin",
+              "party": "R"
+            }
+          ],
+          "bill_sponsorship_type": "bipartisan_multi_party"
+        },
+        {
+          "state_abbr": "MT",
+          "bill_number": "H 556",
+          "year": "2025",
+          "summary": "Revises usage of artificial intelligence in certain health insurance.",
+          "sponsor_name": "Cohenour",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Cohenour (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "OH",
+          "bill_number": "S 164",
+          "year": "2025",
+          "summary": "Regulates the use of artificial intelligence by health insurers.",
+          "sponsor_name": "Cutrona",
+          "sponsor_party": "R",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Cutrona (R)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "OH",
+          "bill_number": "H 579",
+          "year": "2025",
+          "summary": "Regulates the use of artificial intelligence by health insurers.",
+          "sponsor_name": "Schmidt",
+          "sponsor_party": "R",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Schmidt (R)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "TX",
+          "bill_number": "H 4455",
+          "year": "2025",
+          "summary": "Relates to the use of artificial intelligence by health care providers.",
+          "sponsor_name": "Bhojani",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Bhojani (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "TX",
+          "bill_number": "H 4635",
+          "year": "2025",
+          "summary": "Relates to disclosure of the use of artificial intelligence in the denial of insurance claims.",
+          "sponsor_name": "Garcia Hernande",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Garcia Hernande (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [
+            {
+              "name": "Vo",
+              "party": "D"
+            }
+          ],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "D",
+        "R"
+      ],
+      "states_by_sponsor_party": {
+        "D": [
+          "CT",
+          "ME",
+          "MT",
+          "TX"
+        ],
+        "R": [
+          "LA",
+          "OH"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "No citable source names a specific organization as the common drafter of this six-state cluster. The broader policy movement (\"AI can't deny your claim\" bills) is well documented and traces conceptually to California's CMA-sponsored Physicians Make Decisions Act as the first mover, with medical associations in various states actively advocating for similar bills -- but that is evidence of a shared policy movement, not a documented shared drafting source for this specific cluster's bill text.",
+        "sources": [
+          {
+            "label": "California Medical Association press release on the Physicians Make Decisions Act",
+            "url": "https://www.cmadocs.org/newsroom/news/view/ArticleId/50708/"
+          }
+        ]
+      }
+    },
+    {
+      "cluster_id": 8,
+      "theme": "\"AI in health care\" (lower-confidence grouping)",
+      "similarity_score": 0.668,
+      "min_similarity_score": 0.519,
+      "max_similarity_score": 0.773,
+      "states_involved": [
+        "LA",
+        "MA",
+        "MO",
+        "TN",
+        "VT"
+      ],
+      "representative_summary": "Creates the Regulate Artificial Intelligence (AI) In Health Care Act.",
+      "bills": [
+        {
+          "state_abbr": "LA",
+          "bill_number": "H 197",
+          "year": "2026",
+          "summary": "Provides for the use of artificial intelligence by healthcare providers.",
+          "sponsor_name": "Domangue",
+          "sponsor_party": "R",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Domangue (R)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "MA",
+          "bill_number": "S 2632",
+          "year": "2026",
+          "summary": "Relates to the use of artificial intelligence and other software tools in healthcare decision-making.",
+          "sponsor_name": null,
+          "sponsor_party": null,
+          "sponsor_is_committee": true,
+          "sponsor_raw": "Joint Cmt on Advanced Information Tech",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "unattributable_committee_sponsor"
+        },
+        {
+          "state_abbr": "MO",
+          "bill_number": "S 1598",
+          "year": "2026",
+          "summary": "Modifies provisions relating to medical malpractice for the use of artificial intelligence by health care providers.",
+          "sponsor_name": "Beck",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Beck (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "TN",
+          "bill_number": "H 1866",
+          "year": "2026",
+          "summary": "Creates the Regulate Artificial Intelligence (AI) In Health Care Act.",
+          "sponsor_name": "Jones",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Jones (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "TN",
+          "bill_number": "S 2010",
+          "year": "2026",
+          "summary": "Creates the Regulate Artificial Intelligence (AI) In Health Care Act.",
+          "sponsor_name": "Kyle",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Kyle (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        },
+        {
+          "state_abbr": "VT",
+          "bill_number": "H 776",
+          "year": "2026",
+          "summary": "Relates to the use of artificial intelligence in health care coverage decisions.",
+          "sponsor_name": "Priestley",
+          "sponsor_party": "D",
+          "sponsor_is_committee": false,
+          "sponsor_raw": "Priestley (D)",
+          "sponsor_party_override_note": null,
+          "cosponsors": [],
+          "bill_sponsorship_type": "single_party"
+        }
+      ],
+      "distinct_parties_across_cluster": [
+        "D",
+        "R"
+      ],
+      "states_by_sponsor_party": {
+        "R": [
+          "LA"
+        ],
+        "D": [
+          "MO",
+          "TN",
+          "VT"
+        ]
+      },
+      "external_research": {
+        "bottom_line": "No source found connecting this cluster's specific bills to a common drafting organization. Given this cluster's already lower internal similarity (flagged as lower-confidence in the original data-only pass), that is an expected outcome rather than a surprising gap.",
+        "sources": []
+      }
+    }
+  ]
+}
