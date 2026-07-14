@@ -56,18 +56,44 @@
     color: #fff;
     box-shadow: 0 2px 10px rgba(0,0,0,0.18);
   }
-  .header-inner { max-width: 1220px; margin: 0 auto; padding: 1.6rem 1.5rem 1rem; }
+  .header-inner {
+    max-width: 1220px; margin: 0 auto; padding: 1.6rem 1.5rem 1rem;
+    transition: padding 0.2s ease;
+  }
   .eyebrow {
     display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
     text-transform: uppercase; color: #bfdbfe; margin-bottom: 0.4rem;
   }
   header.site-header h1 {
     color: #fff; margin: 0; font-size: clamp(2rem, 4.2vw, 3rem); font-weight: 800;
-    letter-spacing: -0.01em; line-height: 1.05;
+    letter-spacing: -0.01em; line-height: 1.05; transition: font-size 0.2s ease;
   }
   header.site-header .tagline { margin: 0.6rem 0 0.3rem; color: #dbeafe; font-size: 1rem; max-width: 640px; }
   header.site-header .live-count { color: #fef3c7; font-size: 0.88rem; font-weight: 600; margin: 0 0 1rem; }
   header.site-header .live-count .count { font-family: var(--font-heading); }
+
+  /* Collapsed state: auto-applied once the page is scrolled, and toggleable
+     by hand via #header-collapse-toggle -- keeps the nav/filter bar reachable
+     without the full hero (title/tagline/live-count) eating the viewport. */
+  .header-collapse-toggle {
+    position: absolute; top: 0.9rem; right: 1.5rem; border: none; cursor: pointer;
+    background: rgba(255,255,255,0.12); color: #eef2ff; border-radius: 999px;
+    width: 2rem; height: 2rem; font-size: 0.85rem; line-height: 1; display: inline-flex;
+    align-items: center; justify-content: center; transition: background 0.15s ease, transform 0.2s ease;
+  }
+  .header-collapse-toggle:hover { background: rgba(255,255,255,0.24); }
+  .header-collapse-toggle .chev { display: inline-block; transition: transform 0.2s ease; }
+  header.site-header.collapsed .header-collapse-toggle .chev { transform: rotate(180deg); }
+  header.site-header .header-inner { position: relative; }
+  header.site-header.collapsed .eyebrow,
+  header.site-header.collapsed .tagline,
+  header.site-header.collapsed .live-count { display: none; }
+  header.site-header.collapsed h1 { font-size: 1.35rem; }
+  header.site-header.collapsed .header-inner { padding: 0.7rem 3.2rem 0.6rem 1.5rem; }
+  header.site-header.collapsed nav.jumpnav { margin-bottom: 0.6rem; }
+  @media (prefers-reduced-motion: reduce) {
+    .header-inner, header.site-header h1, .header-collapse-toggle .chev { transition: none; }
+  }
 
   nav.jumpnav { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.9rem; }
   nav.jumpnav a {
@@ -346,8 +372,11 @@
 </head>
 <body>
 
-<header class="site-header">
+<header class="site-header" id="site-header">
   <div class="header-inner">
+    <button type="button" class="header-collapse-toggle" id="header-collapse-toggle" aria-expanded="true" aria-controls="site-header" title="Collapse header">
+      <span class="chev">&#9650;</span>
+    </button>
     <span class="eyebrow">Live database · updates every page load</span>
     <h1>AI Legislation Tracker</h1>
     <p class="tagline">What state and federal lawmakers are actually doing on <abbr title="Artificial Intelligence">AI</abbr> — in plain language, straight from the source databases.</p>
@@ -985,6 +1014,38 @@ function reducedMotion() {
   return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+// Shrinks the sticky header once the page is scrolled, so the tall hero
+// (title/tagline/live-count) doesn't keep eating viewport space while
+// browsing the tracker below -- the jumpnav and filter bar stay reachable
+// in a compact bar. A manual toggle overrides the scroll-linked behavior
+// once clicked, so the user's explicit choice always wins from then on.
+function setupHeaderCollapse() {
+  const header = document.getElementById('site-header');
+  const toggleBtn = document.getElementById('header-collapse-toggle');
+  if (!header || !toggleBtn) return;
+  const SCROLL_THRESHOLD = 60;
+  let manual = false;
+
+  function applyCollapsed(collapsed) {
+    header.classList.toggle('collapsed', collapsed);
+    toggleBtn.setAttribute('aria-expanded', String(!collapsed));
+    toggleBtn.title = collapsed ? 'Expand header' : 'Collapse header';
+  }
+
+  function onScroll() {
+    if (manual) return;
+    applyCollapsed(window.scrollY > SCROLL_THRESHOLD);
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    manual = true;
+    applyCollapsed(!header.classList.contains('collapsed'));
+  });
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
 function setupRevealObserver() {
   if (reducedMotion() || typeof IntersectionObserver === 'undefined') {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
@@ -1497,6 +1558,7 @@ async function loadDedupe() {
   loadCookieCutter();
   loadDedupe();
   setupRevealObserver();
+  setupHeaderCollapse();
 })();
 </script>
 </body>
